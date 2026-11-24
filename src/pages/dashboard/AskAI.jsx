@@ -116,7 +116,8 @@ const AskAI = () => {
           'Content-Type': 'application/json',
         },
         signal: controller.signal,
-        body: JSON.stringify({ message: userText }),
+        // Only the age group is sent (never the name), so the answer can match her age.
+        body: JSON.stringify({ message: userText, ageGroup: localStorage.getItem('userAge') || '' }),
       });
       clearTimeout(timeout);
 

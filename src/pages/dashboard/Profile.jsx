@@ -524,10 +524,14 @@ const Profile = () => {
                 <span style={styles.labelText}>{lang === 'hi' ? 'आयु वर्ग' : 'Age Group'} *</span>
                 <select style={styles.input} value={profile.ageGroup} onChange={(e) => onChange('ageGroup', e.target.value)}>
                   <option value="">{lang === 'hi' ? 'चुनें' : 'Select'}</option>
+                  <option value="10-14">10-14</option>
                   <option value="15-22">15-22</option>
                   <option value="23-35">23-35</option>
-                  <option value="36-45">36-45</option>
-                  <option value="46+">46+</option>
+                  <option value="35+">35+</option>
+                  {/* keep an older saved value (like 36-45) selectable */}
+                  {profile.ageGroup && !['10-14', '15-22', '23-35', '35+'].includes(profile.ageGroup) && (
+                    <option value={profile.ageGroup}>{profile.ageGroup}</option>
+                  )}
                 </select>
               </label>
 

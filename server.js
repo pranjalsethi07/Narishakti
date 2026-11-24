@@ -134,6 +134,41 @@ const getGeminiText = (response) => {
   return '';
 };
 
+const BASE_SYSTEM_PROMPT =
+  'You are NariShakti Assistant. Reply in simple, respectful Hinglish or Hindi/English based on user language. Keep answers practical and concise for women-focused support topics.';
+
+// How to talk to each age band. Same facts for everyone; the depth, vocabulary and
+// topics change. Never state the user's age back to her.
+const AGE_GUIDANCE = {
+  child:
+    'The user is a girl aged about 10 to 14. Explain like a kind elder sister: very short sentences, everyday words and small examples, with no medical or financial jargon (if a term is needed, explain it in one line). Be reassuring and never scary. For body, puberty, periods and safety questions give clear, age-appropriate, factual answers and encourage her to talk to a trusted adult such as her mother, a teacher or a doctor. Do not suggest loans, investing or anything that needs an adult to sign; for money, talk about saving, pocket money and staying safe online. If she describes anything unsafe, or someone hurting or scaring her, tell her it is not her fault, to tell a trusted adult right away, and that Childline 1098 or 112 can help.',
+  young:
+    'The user is a young woman aged about 15 to 22. Use clear, simple language with a friendly, non-judgmental tone, and explain any term you use. Give practical steps. Relevant topics include periods and body changes, relationships and safety, studies and first jobs, and starting to save and using UPI safely. She may be under 18, so suggest involving a trusted adult for big decisions and avoid advice that needs an adult to sign. Suggest seeing a doctor when something may be serious.',
+  adult:
+    'The user is an adult woman aged about 23 to 35. Be practical and a little more detailed. You may use proper terms with a short explanation. Relevant topics include pregnancy and motherhood, family planning, work and money, budgeting, insurance, loans and government schemes. Give clear next steps and say when to see a doctor.',
+  midlife:
+    'The user is a woman aged 36 or older. Be respectful and clear, and never condescending. Where relevant, include life-stage topics such as irregular periods, perimenopause and menopause, bone, heart and thyroid health, regular screening, and longer-term money planning such as FDs, insurance and retirement savings. Keep the language plain and give clear next steps.',
+};
+
+// Turns an age group like "10-14", "23-35" or "35+" into one of the bands above.
+// Only digits are accepted, so nothing the client sends can end up inside the prompt.
+const getAgeBand = (ageGroup) => {
+  if (typeof ageGroup !== 'string') return null;
+  const match = ageGroup.trim().match(/^(\d{1,2})\s*(?:-\s*(\d{1,2})|\+)$/);
+  if (!match) return null;
+  if (!match[2]) return 'midlife'; // "35+", "46+"
+  const high = Number(match[2]);
+  if (high <= 14) return 'child';
+  if (high <= 22) return 'young';
+  if (high <= 35) return 'adult';
+  return 'midlife';
+};
+
+const buildSystemPrompt = (ageGroup) => {
+  const band = getAgeBand(ageGroup);
+  return band ? `${BASE_SYSTEM_PROMPT} ${AGE_GUIDANCE[band]}` : BASE_SYSTEM_PROMPT;
+};
+
 const getAssistantReply = async (message, options = {}) => {
   const normalized = (message || '').trim();
   if (!normalized) {
@@ -157,7 +192,7 @@ const getAssistantReply = async (message, options = {}) => {
     const model = process.env.GEMINI_MODEL?.trim() || 'gemini-2.0-flash';
     const ai = new GoogleGenAI({ apiKey });
     const systemPrompt =
-      'You are NariShakti Assistant. Reply in simple, respectful Hinglish or Hindi/English based on user language. Keep answers practical and concise for women-focused support topics.';
+      buildSystemPrompt(options.ageGroup);
 
     const result = await ai.models.generateContent({
       model,
@@ -186,7 +221,7 @@ const getAssistantReply = async (message, options = {}) => {
         {
           role: 'system',
           content:
-            'You are NariShakti Assistant. Reply in simple, respectful Hinglish or Hindi/English based on user language. Keep answers practical and concise for women-focused support topics.',
+            buildSystemPrompt(options.ageGroup),
         },
         { role: 'user', content: normalized },
       ],
@@ -224,7 +259,7 @@ const getAssistantReply = async (message, options = {}) => {
           {
             role: 'system',
             content:
-              'You are NariShakti Assistant. Reply in simple, respectful Hinglish or Hindi/English based on user language. Keep answers practical and concise for women-focused support topics.',
+              buildSystemPrompt(options.ageGroup),
           },
           { role: 'user', content: normalized },
         ],
@@ -261,12 +296,12 @@ app.get('/api/health', (_req, res) => {
 
 app.post('/api/chat', async (req, res) => {
   try {
-    const { message } = req.body || {};
+    const { message, ageGroup } = req.body || {};
 
     if (!message || typeof message !== 'string' || !message.trim()) {
       return res.status(400).json({ error: 'Message is required.' });
     }
-    const reply = await getAssistantReply(message);
+    const reply = await getAssistantReply(message, { ageGroup });
 
     return res.json({ reply });
   } catch (error) {
