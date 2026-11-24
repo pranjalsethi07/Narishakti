@@ -218,3 +218,35 @@ button {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Sidebar resize handle: a thin line on the sidebar's right edge */
+.sidebar-resize { background-color: transparent; transition: background-color 0.15s; }
+.sidebar-resize:hover,
+.sidebar-resize:focus-visible,
+.sidebar-resize.dragging { background-color: var(--primary); }
+
+/* Sidebar rows: soft hover (the active page sets its own background inline) */
+.sidebar-link:hover { background-color: var(--primary-light); }
+
+/* Dashboard: gentle floating art, staggered card entrance, card hover details */
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.float-slow { animation: floatY 6s ease-in-out infinite; }
+
+.stagger > * {
+  animation: popIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 50ms + 60ms);
+}
+
+.action-card:hover .bubble { transform: scale(1.1) rotate(-4deg); }
+.action-card:hover .watermark { transform: rotate(-6deg) scale(1.1); }
+
+/* A soft pulse on the emergency number's phone icon */
+@keyframes pulseRing {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--pulse, #c53030) 55%, transparent); }
+  70% { box-shadow: 0 0 0 12px color-mix(in srgb, var(--pulse, #c53030) 0%, transparent); }
+  100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--pulse, #c53030) 0%, transparent); }
+}
+.pulse-ring { animation: pulseRing 2.2s ease-out infinite; }

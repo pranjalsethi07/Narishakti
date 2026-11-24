@@ -1,91 +1,124 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Menu, Mic, Search, Globe, Flame, TrendingUp, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../context/languageContextValue';
-import { Mic, Globe, Play } from 'lucide-react';
-import { useUserPhoto } from '../utils/userPhoto';
+import { useMediaQuery } from '../utils/useMediaQuery';
+import { recordDailyActivity } from '../utils/userProgress';
+import { getLevelInfo } from '../utils/levels';
+import { getCrumbs } from './navConfig';
+import NotificationBell from './header/NotificationBell';
+import AvatarMenu from './header/AvatarMenu';
 
-const TopNav = () => {
-  const [query, setQuery] = React.useState('');
+const TopNav = ({ isMobile = false, onMenuClick = () => {} }) => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const { lang, setLang, t } = useLanguage();
-  const photo = useUserPhoto();
-  const name = (localStorage.getItem('userName') || '').trim();
-  const initials = name ? name.split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase() : 'NS';
+  const hi = lang === 'hi';
+  const wide = useMediaQuery('(min-width: 1100px)');
+  const [query, setQuery] = useState('');
+  // Count today as an active day as soon as the dashboard opens (safe to repeat).
+  const [streak] = useState(() => recordDailyActivity());
+
+  const level = getLevelInfo();
+  const crumbs = getCrumbs(pathname, t, lang);
+  const title = crumbs[crumbs.length - 1];
+
+  // Both the search box and the mic hand your question over to Ask AI.
+  const submitSearch = (e) => {
+    e.preventDefault();
+    const q = query.trim();
+    navigate(q ? `/dashboard/ask?q=${encodeURIComponent(q)}` : '/dashboard/ask');
+    setQuery('');
+  };
+  const startVoice = () => navigate('/dashboard/ask?voice=1');
 
   return (
-    <header style={styles.header}>
-      <div style={styles.searchContainer}>
-        <div style={styles.inputWrapper}>
-          <input 
-            type="text"
-            placeholder={t("searchPlaceholder")}
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            style={styles.input}
-          />
-          <button style={styles.micBtn} className="mic-pulse">
-            <Mic size={20} color="#fff" />
+    <header style={{ ...styles.header, padding: isMobile ? '10px 14px' : '14px 32px' }}>
+      <div style={styles.left}>
+        {isMobile && (
+          <button type="button" style={styles.menuBtn} onClick={onMenuClick} aria-label={hi ? 'मेनू खोलें' : 'Open menu'}>
+            <Menu size={22} />
           </button>
-        </div>
-
-        <button className="btn btn-secondary" style={styles.playBtn}>
-          <Play size={16} />
-          {t("playVoice")}
-        </button>
+        )}
+        <nav aria-label={hi ? 'आप यहां हैं' : 'You are here'} style={styles.crumbs}>
+          {!isMobile && crumbs.length > 1 && (
+            <>
+              <span style={styles.crumbParent}>{crumbs[0]}</span>
+              <ChevronRight size={16} color="var(--text-light)" />
+            </>
+          )}
+          <h1 style={styles.title} aria-current="page">{title}</h1>
+        </nav>
       </div>
 
-      <div style={styles.actions}>
-        <div style={styles.langToggleBox}>
-          <Globe size={16} color="var(--text-muted)" />
-          <select 
-            value={lang} 
-            onChange={(e) => setLang(e.target.value)}
-            style={styles.langSelect}
-          >
-            <option value="en">English</option>
-            <option value="hi">हिंदी (Hindi)</option>
-          </select>
-        </div>
-        <button
-          type="button"
-          style={styles.avatar}
-          onClick={() => navigate('/dashboard/profile')}
-          title={t('profile')}
-          aria-label={t('profile')}
-        >
-          {photo
-            ? <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            : <span style={{ color: 'white', fontWeight: 'bold' }}>{initials}</span>}
+      <form role="search" onSubmit={submitSearch} style={{ ...styles.searchForm, ...(isMobile ? styles.searchMobile : {}) }}>
+        <Search size={18} color="var(--text-light)" style={styles.searchIcon} aria-hidden="true" />
+        <input
+          type="text"
+          aria-label={hi ? 'AI से पूछें' : 'Ask AI'}
+          placeholder={t('searchPlaceholder')}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          style={styles.input}
+        />
+        <button type="button" style={styles.micBtn} onClick={startVoice} aria-label={hi ? 'बोलकर पूछें' : 'Ask by voice'} title={hi ? 'बोलकर पूछें' : 'Ask by voice'}>
+          <Mic size={18} color="#fff" />
         </button>
+      </form>
+
+      <div style={{ ...styles.actions, ...(isMobile ? { marginLeft: 'auto' } : {}) }}>
+        {wide && (
+          <>
+            <button type="button" style={{ ...styles.chip, color: '#c05621', backgroundColor: '#fffaf0', borderColor: '#feebc8' }} onClick={() => navigate('/dashboard/progress')} title={hi ? 'आपकी स्ट्रीक' : 'Your streak'}>
+              <Flame size={16} color="#dd6b20" /> {streak}
+            </button>
+            <button
+              type="button"
+              style={{ ...styles.chip, color: '#276749', backgroundColor: '#f0fff4', borderColor: '#c6f6d5' }}
+              onClick={() => navigate('/dashboard/progress')}
+              title={level.next
+                ? (hi ? `${level.xp} XP · ${level.next.name.hi} तक ${level.toNext} XP और` : `${level.xp} XP · ${level.toNext} XP to ${level.next.name.en}`)
+                : `${level.xp} XP`}
+            >
+              <TrendingUp size={16} /> {hi ? `स्तर ${level.level}` : `Lvl ${level.level}`}
+            </button>
+          </>
+        )}
+
+        {!isMobile && (
+          <button
+            type="button"
+            style={styles.langBtn}
+            onClick={() => setLang(hi ? 'en' : 'hi')}
+            aria-label={hi ? 'Switch to English' : 'हिंदी में बदलें'}
+            title={hi ? 'Switch to English' : 'हिंदी में बदलें'}
+          >
+            <Globe size={16} color="var(--text-muted)" /> {hi ? 'हिं' : 'EN'}
+          </button>
+        )}
+
+        <NotificationBell lang={lang} streak={streak} />
+        <AvatarMenu lang={lang} setLang={setLang} t={t} />
       </div>
     </header>
   );
 };
 
 const styles = {
-  header: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 32px', backgroundColor: 'var(--surface)', borderBottom: '1px solid var(--border-color)', position: 'sticky', top: 0, zIndex: 10 },
-  searchContainer: { display: 'flex', alignItems: 'center', gap: '16px', flex: 1, maxWidth: '600px' },
-  inputWrapper: { flex: 1, position: 'relative', display: 'flex', alignItems: 'center' },
-  input: { width: '100%', padding: '12px 20px', paddingRight: '50px', borderRadius: 'var(--radius-full)', border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-color)', fontSize: '1rem', outline: 'none', transition: 'border-color 0.2s' },
-  micBtn: { position: 'absolute', right: '6px', width: '36px', height: '36px', borderRadius: '50%', backgroundColor: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', border: 'none' },
-  playBtn: { padding: '10px 16px', borderRadius: 'var(--radius-full)', fontSize: '0.9rem' },
-  actions: { display: 'flex', alignItems: 'center', gap: '16px' },
-  langToggleBox: { display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px', backgroundColor: 'var(--bg-color)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)' },
-  langSelect: { border: 'none', backgroundColor: 'transparent', outline: 'none', fontWeight: '600', color: 'var(--primary-dark)', cursor: 'pointer' },
-  avatar: {
-    width: '40px',
-    height: '40px',
-    borderRadius: '50%',
-    backgroundColor: 'var(--secondary)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    border: 'none',
-    cursor: 'pointer',
-    fontFamily: 'inherit',
-    padding: 0,
-    overflow: 'hidden',
-  }
+  header: { display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '12px 20px', backgroundColor: 'var(--surface)', borderBottom: '1px solid var(--border-color)', position: 'sticky', top: 0, zIndex: 10 },
+  left: { display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 },
+  menuBtn: { width: '40px', height: '40px', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-dark)', border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-color)' },
+  crumbs: { display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 },
+  crumbParent: { color: 'var(--text-muted)', fontSize: '0.95rem' },
+  title: { fontFamily: 'inherit', fontSize: '1.15rem', fontWeight: '700', color: 'var(--text-dark)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
+  searchForm: { position: 'relative', display: 'flex', alignItems: 'center', flex: '1 1 320px', maxWidth: '520px', marginLeft: 'auto' },
+  searchMobile: { order: 3, flex: '1 1 100%', maxWidth: 'none', marginLeft: 0 },
+  searchIcon: { position: 'absolute', left: '16px', pointerEvents: 'none' },
+  input: { width: '100%', padding: '11px 52px 11px 42px', borderRadius: 'var(--radius-full)', border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-color)', fontSize: '0.95rem', fontFamily: 'inherit', outline: 'none', transition: 'border-color 0.2s' },
+  micBtn: { position: 'absolute', right: '5px', width: '34px', height: '34px', borderRadius: '50%', backgroundColor: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', border: 'none' },
+  actions: { display: 'flex', alignItems: 'center', gap: '12px' },
+  chip: { display: 'flex', alignItems: 'center', gap: '6px', padding: '7px 12px', borderRadius: 'var(--radius-full)', border: '1px solid', fontWeight: '600', fontSize: '0.9rem', fontFamily: 'inherit' },
+  langBtn: { display: 'flex', alignItems: 'center', gap: '6px', padding: '7px 12px', borderRadius: 'var(--radius-full)', border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-color)', fontWeight: '600', fontSize: '0.9rem', color: 'var(--primary-dark)', fontFamily: 'inherit' },
 };
 
 export default TopNav;

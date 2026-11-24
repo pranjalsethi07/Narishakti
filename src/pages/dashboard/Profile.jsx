@@ -21,6 +21,7 @@ import {
   recordDailyActivity,
 } from '../../utils/userProgress';
 import { useUserPhoto, setUserPhoto, clearUserPhoto } from '../../utils/userPhoto';
+import { getLevelInfo } from '../../utils/levels';
 
 const PROFILE_STORAGE_KEY = 'userProfile';
 const PROFILE_DRAFT_STORAGE_KEY = 'userProfileDraft';
@@ -140,6 +141,7 @@ const Profile = () => {
   const [editing, setEditing] = useState(() => !isProfileReady(profile));
   const [hasSaved, setHasSaved] = useState(() => Boolean(localStorage.getItem(PROFILE_STORAGE_KEY)));
   const photo = useUserPhoto();
+  const [levelInfo] = useState(() => getLevelInfo());
   const [photoError, setPhotoError] = useState('');
   const fileRef = useRef(null);
   const [progressStats, setProgressStats] = useState({
@@ -368,7 +370,7 @@ const Profile = () => {
               <input ref={fileRef} type="file" accept="image/*" onChange={handlePhotoPick} style={{ display: 'none' }} />
               <div style={styles.levelPill}>
                 <Award size={14} color="#fff" />
-                {lang === 'hi' ? 'शिक्षार्थी' : 'Learner'}
+                {lang === 'hi' ? `स्तर ${levelInfo.level} · ${levelInfo.name.hi}` : `Lvl ${levelInfo.level} · ${levelInfo.name.en}`}
               </div>
             </div>
 

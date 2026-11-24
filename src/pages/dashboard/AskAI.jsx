@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Mic, Send, Volume2, StopCircle } from 'lucide-react';
 import { useLanguage } from '../../context/languageContextValue';
 import { incrementQuestionsAsked } from '../../utils/userProgress';
@@ -196,6 +197,34 @@ const AskAI = () => {
       // Ignore "already started" errors raised by some browsers.
     }
   };
+
+  // The header's search box sends you here as /dashboard/ask?q=... and its mic
+  // button as ?voice=1. Handle each once, then clear it from the address.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const incomingQuestion = searchParams.get('q');
+  const wantsVoice = searchParams.get('voice');
+  const handledRef = useRef({ q: null, voice: false });
+  const micToggleRef = useRef(null);
+
+  useEffect(() => {
+    micToggleRef.current = handleMicToggle;
+  });
+
+  useEffect(() => {
+    if (!incomingQuestion) { handledRef.current.q = null; return; }
+    if (handledRef.current.q === incomingQuestion) return;
+    handledRef.current.q = incomingQuestion;
+    sendMessageRef.current?.(incomingQuestion);
+    setSearchParams({}, { replace: true });
+  }, [incomingQuestion, setSearchParams]);
+
+  useEffect(() => {
+    if (!wantsVoice) { handledRef.current.voice = false; return; }
+    if (handledRef.current.voice) return;
+    handledRef.current.voice = true;
+    micToggleRef.current?.();
+    setSearchParams({}, { replace: true });
+  }, [wantsVoice, setSearchParams]);
 
   return (
     <div className="fade-in" style={styles.container}>

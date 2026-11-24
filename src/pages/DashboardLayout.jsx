@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import TopNav from '../components/TopNav';
 import { useLanguage } from '../context/languageContextValue';
+import { useMediaQuery } from '../utils/useMediaQuery';
 
 // Pages that should not show the shared back button
 const NO_BACK_PATHS = ['/dashboard', '/dashboard/progress']; // progress has its own
@@ -14,12 +15,17 @@ const DashboardLayout = () => {
   const { lang } = useLanguage();
   const showBack = !NO_BACK_PATHS.includes(pathname.replace(/\/+$/, ''));
 
+  // On phones the sidebar is a drawer, opened from the header's menu button.
+  const isMobile = useMediaQuery('(max-width: 768px)');
+  const [menuOpen, setMenuOpen] = useState(false);
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
+
   return (
     <div style={styles.layout}>
-      <Sidebar />
+      <Sidebar isMobile={isMobile} mobileOpen={menuOpen} onMobileClose={closeMenu} />
       <div style={styles.mainWrapper}>
-        <TopNav />
-        <main style={styles.content}>
+        <TopNav isMobile={isMobile} onMenuClick={() => setMenuOpen(true)} />
+        <main style={{ ...styles.content, padding: isMobile ? '16px' : '32px' }}>
           <div style={styles.container}>
             {showBack && (
               <button onClick={() => navigate('/dashboard')} style={styles.backBtn}>
@@ -42,6 +48,7 @@ const styles = {
   },
   mainWrapper: {
     flex: 1,
+    minWidth: 0,
     display: 'flex',
     flexDirection: 'column',
     overflow: 'hidden', // prevent double scrollbar
