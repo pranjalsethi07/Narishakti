@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage } from '../context/languageContextValue';
 import { Mic, MessageCircle, Phone, ShoppingBag, ShieldCheck, HeartPulse, GraduationCap, ArrowRight, Quote } from 'lucide-react';
 
 const LandingPage = () => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Mic, Send, Volume2, StopCircle } from 'lucide-react';
-import { useLanguage } from '../../context/LanguageContext';
+import { useLanguage } from '../../context/languageContextValue';
 import { incrementQuestionsAsked } from '../../utils/userProgress';
 import { apiFetch } from '../../utils/api';
 
@@ -16,6 +16,7 @@ const AskAI = () => {
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
   const transcriptRef = useRef('');
+  const sendMessageRef = useRef(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -71,8 +72,8 @@ const AskAI = () => {
     recognition.onend = async () => {
       setIsRecording(false);
       const spokenText = transcriptRef.current.trim();
-      if (spokenText && !isThinking) {
-        await sendMessage(spokenText);
+      if (spokenText) {
+        await sendMessageRef.current?.(spokenText);
       }
     };
 
@@ -85,7 +86,7 @@ const AskAI = () => {
       recognition.onend = null;
       recognition.stop();
     };
-  }, [isThinking]);
+  }, []);
 
   useEffect(() => {
     if (recognitionRef.current) {
@@ -153,6 +154,12 @@ const AskAI = () => {
       setIsThinking(false);
     }
   };
+
+  // Keep the latest sendMessage reachable from the speech recognition handlers
+  // without re-creating the recognizer whenever chat state changes.
+  useEffect(() => {
+    sendMessageRef.current = sendMessage;
+  });
 
   const handleSend = async (e) => {
     e.preventDefault();

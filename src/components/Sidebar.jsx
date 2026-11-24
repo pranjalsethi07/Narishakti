@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage } from '../context/languageContextValue';
 import { LayoutDashboard, BookOpen, HelpCircle, Target, Users, Landmark, FileText, User, Activity, Stethoscope, Briefcase } from 'lucide-react';
 import Logo from './Logo';
 

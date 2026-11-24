@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '../../context/LanguageContext';
+import { useLanguage } from '../../context/languageContextValue';
 import { MessageCircle, BookOpen, Target, ShieldCheck, Users, Landmark, FileText, Flame, TrendingUp, Activity, Stethoscope } from 'lucide-react';
 import { getContinueLearningMeta, getStoredLearnProgress } from '../../utils/learningProgress';
 import { recordDailyActivity, getDayStreakCount } from '../../utils/userProgress';
 
+// eslint-disable-next-line no-unused-vars -- Icon is used as a JSX component below
 const Card = ({ title, icon: Icon, color, bg, onClick }) => (
   <div style={{...styles.card, backgroundColor: bg}} className="hover-card" onClick={onClick}>
     <div style={{...styles.iconWrapper, backgroundColor: color}}>
@@ -17,14 +18,11 @@ const Card = ({ title, icon: Icon, color, bg, onClick }) => (
 const Home = () => {
   const navigate = useNavigate();
   const { t, lang } = useLanguage();
-  const [userName, setUserName] = useState('');
+  const [userName] = useState(() => localStorage.getItem('userName') || 'Didi');
   const [learnMeta, setLearnMeta] = useState(() => getContinueLearningMeta(getStoredLearnProgress()));
   const [dayStreak, setDayStreak] = useState(getDayStreakCount());
 
   useEffect(() => {
-    const name = localStorage.getItem('userName') || 'Didi';
-    setUserName(name);
-
     const refreshLearningMeta = () => {
       setLearnMeta(getContinueLearningMeta(getStoredLearnProgress()));
       setDayStreak(recordDailyActivity());

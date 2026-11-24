@@ -1,27 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useLanguage } from '../../context/LanguageContext';
+import { useLanguage } from '../../context/languageContextValue';
 import { Flame, TrendingUp, ArrowLeft, Plus } from 'lucide-react';
 
 const Progress = () => {
   const navigate = useNavigate();
-  const { t, lang } = useLanguage();
-  const [streaks, setStreaks] = useState([]);
-  const [levels, setLevels] = useState([]);
+  const { lang } = useLanguage();
+  const [streaks, setStreaks] = useState(() => JSON.parse(localStorage.getItem('allStreaks') || '[]'));
+  const [levels, setLevels] = useState(() => JSON.parse(localStorage.getItem('allLevels') || '[]'));
   const [newStreakDays, setNewStreakDays] = useState('');
   const [newLevelNum, setNewLevelNum] = useState('');
   const [newLevelName, setNewLevelName] = useState('');
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = () => {
-    const savedStreaks = JSON.parse(localStorage.getItem('allStreaks') || '[]');
-    const savedLevels = JSON.parse(localStorage.getItem('allLevels') || '[]');
-    setStreaks(savedStreaks);
-    setLevels(savedLevels);
-  };
 
   const addStreak = () => {
     if (!newStreakDays.trim()) return;

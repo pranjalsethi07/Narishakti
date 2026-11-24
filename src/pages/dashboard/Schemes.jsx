@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useLanguage } from '../../context/LanguageContext';
+import { useLanguage } from '../../context/languageContextValue';
 import { Landmark, Volume2, Info, Search, HeartPulse, GraduationCap, CheckCircle } from 'lucide-react';
 
 const PROFILE_STORAGE_KEY = 'userProfile';
