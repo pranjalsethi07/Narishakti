@@ -691,7 +691,7 @@ const DigitalDoctor = () => {
 
 const styles = {
   container: {
-    maxWidth: '1100px',
+    maxWidth: 'none',
     margin: '0 auto',
   },
   header: {

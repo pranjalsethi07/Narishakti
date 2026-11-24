@@ -37,8 +37,8 @@ const Logo = ({ width = 150, showText = true }) => {
       </svg>
       {showText && (
         <span style={{ 
-          fontFamily: "'Outfit', sans-serif", 
-          fontWeight: '800', 
+          fontFamily: "'Outfit', sans-serif",
+          fontWeight: '800',
           fontSize: `${width * 0.22}px`, 
           color: '#000', 
           marginTop: '-10px',

@@ -112,7 +112,7 @@ const DailyQuestion = () => {
 
 const styles = {
   container: {
-    maxWidth: '800px',
+    maxWidth: 'none',
     margin: '0 auto',
   },
   header: {

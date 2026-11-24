@@ -16,6 +16,9 @@ import Tracker from './pages/dashboard/Tracker';
 import DigitalDoctor from './pages/dashboard/DigitalDoctor';
 import OpportunitiesWomen from './pages/dashboard/OpportunitiesWomen';
 import Progress from './pages/dashboard/Progress';
+import Games from './pages/dashboard/Games';
+import GamePlay from './pages/dashboard/GamePlay';
+import GameLevels from './pages/dashboard/GameLevels';
 
 function App() {
   return (
@@ -37,6 +40,9 @@ function App() {
           <Route path="digital-doctor" element={<DigitalDoctor />} />
           <Route path="opportunities-women" element={<OpportunitiesWomen />} />
           <Route path="progress" element={<Progress />} />
+          <Route path="games" element={<Games />} />
+          <Route path="games/:type" element={<GameLevels />} />
+          <Route path="games/:type/:level" element={<GamePlay />} />
         </Route>
       </Routes>
     </Router>

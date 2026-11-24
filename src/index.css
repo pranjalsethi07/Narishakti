@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Mukta:wght@400;500;600;700&family=Tiro+Devanagari+Hindi:ital@0;1&display=swap');
 
 :root {
   --primary: #9b63e8; /* Soft purple */
@@ -167,4 +167,54 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+
+/* ---------- Landing page only: lotus theme ---------- */
+.landing-theme {
+  --primary: #c2185b;
+  --primary-light: #fbe6ee;
+  --primary-dark: #6d1040;
+  --secondary: #e5608a;
+  --secondary-light: #fde4ec;
+  --accent: #1f9e8c;
+  --accent-light: #dff5f1;
+  --marigold: #f2b134;
+  --ink: #2b1230;
+  --bg-color: #fff7f9;
+  --text-dark: #2b1d2e;
+  --text-muted: #6f5f73;
+  --border-color: #ecdde3;
+  --shadow-sm: 0 2px 8px rgba(109, 16, 64, 0.05);
+  --shadow-md: 0 8px 18px rgba(194, 24, 91, 0.12);
+  --shadow-lg: 0 14px 28px rgba(194, 24, 91, 0.16);
+  --shadow-xl: 0 24px 48px rgba(109, 16, 64, 0.16);
+  --font-family: 'Mukta', system-ui, sans-serif;
+  --font-display: 'Tiro Devanagari Hindi', Georgia, serif;
+  font-family: var(--font-family);
+  background-color: var(--bg-color);
+}
+.landing-theme h1, .landing-theme h2, .landing-theme h3,
+.landing-theme .h1, .landing-theme .h2, .landing-theme .h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+.landing-theme .btn-primary { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); }
+.landing-theme :focus-visible { outline: 3px solid var(--marigold); outline-offset: 2px; border-radius: 6px; }
+
+.pop-in { animation: popIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.15s both; }
+@keyframes popIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

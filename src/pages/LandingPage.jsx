@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, lazy, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { useLanguage } from '../context/languageContextValue';
 import { Mic, MessageCircle, Phone, ShoppingBag, ShieldCheck, HeartPulse, GraduationCap, ArrowRight, Quote } from 'lucide-react';
+
+// three.js is only downloaded for the landing page
+const LotusScene = lazy(() => import('../components/LotusScene'));
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -32,20 +35,23 @@ const LandingPage = () => {
   ];
 
   return (
-    <div style={styles.page}>
+    <div style={styles.page} className="landing-theme">
       <Navbar />
       
       {/* 1. HERO SECTION */}
       <section style={styles.heroSection}>
         <div style={styles.heroContent} className="fade-in">
           <div style={styles.heroText}>
-            <h1 className="h1" style={{ marginBottom: '16px', fontSize: '3rem', color: 'var(--primary-dark)' }}>Apni Digital Didi</h1>
-            <p className="h3" style={{ color: 'var(--text-dark)', marginBottom: '32px', lineHeight: 1.4, fontWeight: '400' }}>
-              {t('landingSubtitle')}
-            </p>
-            <p style={{fontSize: '1.1rem', color: 'var(--text-muted)', marginBottom: '32px'}}>
+            <h1 className="h1" style={styles.heroTitle}>Apni Digital Didi</h1>
+            <p style={styles.heroSubtitle}>{t('landingSubtitle')}</p>
+            <p style={{fontSize: '1.1rem', color: 'var(--text-muted)', maxWidth: '46ch'}}>
               Experience a private, judgment-free space designed for the modern Indian woman.
             </p>
+            <div style={styles.lotusStage}>
+              <Suspense fallback={null}>
+                <LotusScene />
+              </Suspense>
+            </div>
           </div>
 
           <form onSubmit={handleContinue} style={styles.formCard} className="hover-card pop-in">
@@ -200,7 +206,7 @@ const LandingPage = () => {
             <div style={styles.testimonialCard}>
               <Quote size={40} color="var(--primary-light)" style={{marginBottom: '16px'}} />
               <p style={{fontSize: '1.1rem', fontStyle: 'italic', marginBottom: '24px', lineHeight: 1.6}}>{t('test2')}</p>
-              <h4 style={{color: 'var(--secondary)'}}>{t('test2Author')}</h4>
+              <h4 style={{color: 'var(--primary)'}}>{t('test2Author')}</h4>
             </div>
           </div>
         </div>
@@ -243,9 +249,12 @@ const LandingPage = () => {
 const styles = {
   page: { backgroundColor: 'var(--bg-color)', paddingBottom: '100px' }, // space for fixed footer
   
-  heroSection: { minHeight: '90vh', display: 'flex', alignItems: 'center', backgroundColor: 'var(--primary-light)', backgroundImage: 'radial-gradient(circle at 80% 20%, rgba(255,143,171,0.2) 0%, transparent 50%)', padding: '40px 24px' },
+  heroSection: { minHeight: '90vh', display: 'flex', alignItems: 'center', backgroundColor: 'var(--primary-light)', backgroundImage: 'radial-gradient(circle at 18% 70%, rgba(242,177,52,0.18) 0%, transparent 42%), radial-gradient(circle at 85% 15%, rgba(229,96,138,0.18) 0%, transparent 50%)', padding: '40px 24px' },
   heroContent: { maxWidth: '1200px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '48px', width: '100%' },
   heroText: { flex: '1 1 400px' },
+  heroTitle: { fontSize: 'clamp(2.6rem, 6vw, 4.4rem)', color: 'var(--primary-dark)', marginBottom: '12px', lineHeight: 1.05 },
+  heroSubtitle: { fontFamily: 'var(--font-display)', fontSize: 'clamp(1.2rem, 2.4vw, 1.6rem)', color: 'var(--primary)', marginBottom: '16px', lineHeight: 1.35 },
+  lotusStage: { width: '100%', maxWidth: '460px', height: 'clamp(240px, 36vh, 360px)', marginTop: '24px', marginLeft: '-12px' },
   formCard: { flex: '1 1 400px', backgroundColor: 'var(--surface)', padding: '40px', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-xl)', maxWidth: '500px', border: '1px solid rgba(255,143,171,0.3)' },
   
   aboutSection: { padding: '80px 24px', backgroundColor: 'var(--surface)' },

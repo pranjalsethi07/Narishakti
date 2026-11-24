@@ -151,7 +151,7 @@ const Progress = () => {
 };
 
 const styles = {
-  page: { padding: '24px', maxWidth: '1000px', margin: '0 auto' },
+  page: { padding: '24px', maxWidth: 'none', margin: '0 auto' },
   backBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 16px', backgroundColor: 'var(--surface)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontSize: '1rem', fontWeight: '600', color: 'var(--text-dark)', marginBottom: '32px' },
   section: { marginBottom: '40px', backgroundColor: 'var(--surface)', padding: '24px', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border-color)' },
   sectionHeader: { marginBottom: '24px' },

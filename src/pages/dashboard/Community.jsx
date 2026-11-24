@@ -326,7 +326,7 @@ const Community = () => {
 
 const styles = {
   container: {
-    maxWidth: '700px',
+    maxWidth: 'none',
     margin: '0 auto',
   },
   header: {

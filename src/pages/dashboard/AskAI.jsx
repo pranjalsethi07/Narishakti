@@ -277,9 +277,11 @@ const AskAI = () => {
 
 const styles = {
   container: {
-    maxWidth: '800px',
+    width: '100%',
     margin: '0 auto',
-    height: 'calc(100vh - 120px)',
+    // viewport minus top bar, page padding and the Back button above the chat
+    height: 'calc(100vh - 230px)',
+    minHeight: '420px',
     display: 'flex',
     flexDirection: 'column',
     backgroundColor: '#efeae2', // WhatsApp-like bg

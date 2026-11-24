@@ -147,7 +147,7 @@ const OpportunitiesWomen = () => {
 
 const styles = {
   container: {
-    maxWidth: '1050px',
+    maxWidth: 'none',
     margin: '0 auto',
   },
   header: {

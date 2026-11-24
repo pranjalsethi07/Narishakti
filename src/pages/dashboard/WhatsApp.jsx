@@ -215,7 +215,7 @@ const WhatsApp = () => {
 
 const styles = {
   container: {
-    maxWidth: '900px',
+    maxWidth: 'none',
     margin: '0 auto',
   },
   flexContainer: {

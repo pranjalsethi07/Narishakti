@@ -613,7 +613,7 @@ const Tracker = () => {
 };
 
 const styles = {
-  container: { maxWidth: '1000px', margin: '0 auto' },
+  container: { maxWidth: 'none', margin: '0 auto' },
   header: { marginBottom: '24px' },
   modeSelector: {
     display: 'flex',

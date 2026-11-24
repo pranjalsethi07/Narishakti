@@ -314,7 +314,7 @@ const styles = {
   
   // Active Test Styles
   testContainer: {
-    maxWidth: '700px',
+    maxWidth: 'none',
     margin: '0 auto',
     paddingTop: '20px'
   },

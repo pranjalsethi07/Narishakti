@@ -52,7 +52,7 @@ const styles = {
     padding: '32px',
   },
   container: {
-    maxWidth: '1200px',
+    maxWidth: 'none',
     margin: '0 auto',
   },
   backBtn: {

@@ -411,7 +411,7 @@ const styles = {
   select: { padding: '8px 12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', backgroundColor: 'var(--surface)', outline: 'none' },
   tabs: { display: 'flex', gap: '32px', borderBottom: '1px solid var(--border-color)', marginBottom: '32px' },
   tab: { padding: '12px 0', fontSize: '1.1rem', fontWeight: '600', backgroundColor: 'transparent', transition: 'all 0.2s' },
-  roadmap: { maxWidth: '800px' },
+  roadmap: { maxWidth: 'none' },
   roadmapItem: { display: 'flex', gap: '24px', minHeight: '100px', transition: 'transform 0.2s ease' },
   statusCol: { display: 'flex', flexDirection: 'column', alignItems: 'center', width: '24px' },
   line: { width: '2px', flex: 1, margin: '8px 0', transition: 'background-color 0.3s' },
@@ -419,7 +419,7 @@ const styles = {
   actions: { display: 'flex', gap: '12px' },
   
   // Active Module styles
-  moduleContainer: { maxWidth: '800px', margin: '0 auto', paddingBottom: '40px' },
+  moduleContainer: { maxWidth: 'none', margin: '0 auto', paddingBottom: '40px' },
   backBtn: { display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-muted)', fontWeight: '500', marginBottom: '24px', fontSize: '1rem' },
   moduleHeader: { backgroundColor: 'var(--primary-light)', padding: '32px', borderRadius: 'var(--radius-lg)', marginBottom: '32px', borderLeft: '6px solid var(--primary)' },
   videoSection: { marginBottom: '40px' },

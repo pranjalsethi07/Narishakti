@@ -891,7 +891,7 @@ const Scanner = () => {
 
 const styles = {
   container: {
-    maxWidth: '760px',
+    maxWidth: 'none',
     margin: '0 auto',
   },
   uploadArea: {

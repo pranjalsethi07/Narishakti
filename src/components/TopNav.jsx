@@ -2,11 +2,15 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/languageContextValue';
 import { Mic, Globe, Play } from 'lucide-react';
+import { useUserPhoto } from '../utils/userPhoto';
 
 const TopNav = () => {
   const [query, setQuery] = React.useState('');
   const navigate = useNavigate();
   const { lang, setLang, t } = useLanguage();
+  const photo = useUserPhoto();
+  const name = (localStorage.getItem('userName') || '').trim();
+  const initials = name ? name.split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase() : 'NS';
 
   return (
     <header style={styles.header}>
@@ -49,7 +53,9 @@ const TopNav = () => {
           title={t('profile')}
           aria-label={t('profile')}
         >
-          <span style={{ color: 'white', fontWeight: 'bold' }}>NS</span>
+          {photo
+            ? <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            : <span style={{ color: 'white', fontWeight: 'bold' }}>{initials}</span>}
         </button>
       </div>
     </header>
@@ -77,6 +83,8 @@ const styles = {
     border: 'none',
     cursor: 'pointer',
     fontFamily: 'inherit',
+    padding: 0,
+    overflow: 'hidden',
   }
 };
 
