@@ -25,3 +25,6 @@ dist-ssr
 
 .npm-cache-temp/
 .env
+
+# lesson-video build cache (voice clips, rendered slides)
+tools/lesson-video/.work/

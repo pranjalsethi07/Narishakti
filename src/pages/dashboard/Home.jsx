@@ -184,7 +184,7 @@ const Home = () => {
               </p>
             </div>
           </div>
-          <button className="btn btn-primary" onClick={() => navigate('/dashboard/learn')}>{t('resume')}</button>
+          <button className="btn btn-primary" onClick={() => navigate(`/dashboard/learn/${learnMeta.category}`)}>{t('resume')}</button>
         </div>
       </section>
 

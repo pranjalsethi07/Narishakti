@@ -1,0 +1,110 @@
+{
+  "course": "Money Matters",
+  "lessonNo": 2,
+  "title": "UPI & Digital Payments",
+  "voice": "hi-IN-SwaraNeural",
+  "slides": [
+    {
+      "kicker": "Money Matters · Lesson 2",
+      "title": "UPI: Pay Safely",
+      "hi_title": "UPI: सुरक्षित डिजिटल भुगतान",
+      "visual": { "emoji": "📱" },
+      "parts": [
+        { "hi": "नमस्ते! आज हम यूपीआई के बारे में सीखेंगे, जिससे आप फ़ोन से सीधे अपने बैंक खाते से पैसे भेज और पा सकती हैं।", "en": "Hello! Today we will learn about UPI, which lets you send and receive money straight from your bank account using your phone." },
+        { "hi": "और साथ ही सीखेंगे कि धोखाधड़ी से कैसे बचें।", "en": "We will also learn how to stay safe from fraud." }
+      ]
+    },
+    {
+      "kicker": "What is UPI",
+      "title": "Unified Payments Interface",
+      "hi_title": "यूपीआई क्या है?",
+      "visual": { "emoji": "⚡" },
+      "bullets": [
+        { "icon": "⚡", "en": "Instant transfer, 24×7", "hi": "तुरंत पैसे, चौबीसों घंटे" },
+        { "icon": "🏦", "en": "Money moves bank to bank", "hi": "पैसा सीधे बैंक से बैंक" },
+        { "icon": "🆓", "en": "No fee for everyday payments", "hi": "रोज़ के भुगतान पर कोई फ़ीस नहीं" }
+      ],
+      "parts": [
+        { "reveal": 1, "hi": "यूपीआई का पूरा नाम है यूनिफ़ाइड पेमेंट्स इंटरफ़ेस। इससे पैसे तुरंत पहुँचते हैं, दिन हो या रात, छुट्टी हो या नहीं।", "en": "UPI stands for Unified Payments Interface. Money arrives instantly, day or night, holiday or not." },
+        { "reveal": 2, "hi": "पैसा सीधे आपके बैंक खाते से सामने वाले के बैंक खाते में जाता है।", "en": "The money goes directly from your bank account to the other person's bank account." },
+        { "reveal": 3, "hi": "और आम भुगतान के लिए आपको कोई फ़ीस नहीं देनी पड़ती।", "en": "And you pay no fee for everyday payments." }
+      ]
+    },
+    {
+      "kicker": "Getting started",
+      "title": "Set up in 3 steps",
+      "hi_title": "3 आसान कदम",
+      "visual": { "emoji": "🪜" },
+      "bullets": [
+        { "icon": "🏦", "en": "Bank account linked to your mobile", "hi": "मोबाइल नंबर से जुड़ा बैंक खाता" },
+        { "icon": "📲", "en": "BHIM or your bank's UPI app", "hi": "BHIM या अपने बैंक का UPI ऐप" },
+        { "icon": "🔢", "en": "Set a secret UPI PIN", "hi": "एक गुप्त UPI PIN बनाएँ" }
+      ],
+      "parts": [
+        { "reveal": 1, "hi": "पहला कदम: आपका बैंक खाता आपके मोबाइल नंबर से जुड़ा होना चाहिए।", "en": "Step one: your bank account must be linked to your mobile number." },
+        { "reveal": 2, "hi": "दूसरा: भीम या अपने बैंक का कोई यूपीआई ऐप डाउनलोड करें और अपना खाता जोड़ें।", "en": "Two: download BHIM or your bank's UPI app and add your account." },
+        { "reveal": 3, "hi": "तीसरा: अपने डेबिट कार्ड की मदद से एक गुप्त यूपीआई पिन बनाएँ। यह पिन सिर्फ़ आपको पता होना चाहिए।", "en": "Three: create a secret UPI PIN using your debit card. Only you should know this PIN." }
+      ]
+    },
+    {
+      "kicker": "Paying someone",
+      "title": "Scan, check, pay",
+      "hi_title": "स्कैन करें, नाम जाँचें, भुगतान करें",
+      "visual": { "emoji": "🔍" },
+      "bullets": [
+        { "icon": "📷", "en": "Scan the QR code or enter UPI ID", "hi": "QR कोड स्कैन करें या UPI ID डालें" },
+        { "icon": "👀", "en": "Check the name and amount", "hi": "नाम और रकम ज़रूर जाँचें" },
+        { "icon": "🔐", "en": "Enter PIN only to send money", "hi": "PIN सिर्फ़ पैसे भेजने के लिए" }
+      ],
+      "parts": [
+        { "reveal": 1, "hi": "पैसे भेजने के लिए दुकान का क्यूआर कोड स्कैन करें, या सामने वाले का यूपीआई आईडी या नंबर डालें।", "en": "To pay, scan the shop's QR code, or enter the other person's UPI ID or number." },
+        { "reveal": 2, "hi": "पिन डालने से पहले स्क्रीन पर आया नाम और रकम ध्यान से जाँचें।", "en": "Before entering your PIN, carefully check the name and amount on the screen." },
+        { "reveal": 3, "hi": "फिर अपना पिन डालें। पिन सिर्फ़ पैसे भेजने के लिए लगता है।", "en": "Then enter your PIN. The PIN is needed only to send money." }
+      ]
+    },
+    {
+      "kicker": "The golden rule",
+      "title": "No PIN to receive money",
+      "hi_title": "पैसे पाने के लिए PIN कभी नहीं",
+      "visual": { "emoji": "🚫", "caption": "PIN = money going out" },
+      "bullets": [
+        { "icon": "📥", "en": "Receiving money needs no PIN", "hi": "पैसे पाने में PIN नहीं लगता" },
+        { "icon": "🚩", "en": "PIN to 'receive' a prize? It's a scam", "hi": "इनाम 'पाने' के लिए PIN? यह धोखा है" }
+      ],
+      "parts": [
+        { "reveal": 1, "hi": "अब सबसे ज़रूरी बात ध्यान से सुनिए: पैसे पाने के लिए कभी भी पिन नहीं डालना पड़ता।", "en": "Now listen carefully to the most important point: you never have to enter a PIN to receive money." },
+        { "reveal": 2, "hi": "अगर कोई कहे कि इनाम या रिफ़ंड पाने के लिए पिन डालिए, तो समझ जाइए कि यह धोखा है। पिन डालते ही पैसा आपके खाते से चला जाएगा।", "en": "If someone says enter your PIN to get a prize or refund, know that it is a scam. The moment you enter the PIN, money leaves your account." }
+      ]
+    },
+    {
+      "kicker": "Stay safe",
+      "title": "Never share these",
+      "hi_title": "ये कभी किसी को न बताएँ",
+      "visual": { "emoji": "🛡️" },
+      "bullets": [
+        { "icon": "🔢", "en": "Your UPI PIN", "hi": "आपका UPI PIN" },
+        { "icon": "💬", "en": "The OTP from an SMS", "hi": "SMS में आया OTP" },
+        { "icon": "📞", "en": "A real bank never asks on a call", "hi": "असली बैंक फ़ोन पर कभी नहीं माँगता" }
+      ],
+      "parts": [
+        { "reveal": 2, "hi": "अपना यूपीआई पिन और एसएमएस में आया ओटीपी किसी को न बताएँ, चाहे वह ख़ुद को बैंक वाला ही क्यों न बताए।", "en": "Never tell anyone your UPI PIN or the OTP from an SMS, even if they say they are from the bank." },
+        { "reveal": 3, "hi": "असली बैंक कभी फ़ोन पर पिन या ओटीपी नहीं माँगता। अनजान लिंक पर क्लिक न करें, और किसी के कहने पर स्क्रीन शेयर करने वाले ऐप डाउनलोड न करें।", "en": "A real bank never asks for a PIN or OTP on a call. Don't click unknown links, and don't download screen-sharing apps because someone asks you to." }
+      ]
+    },
+    {
+      "kicker": "If something goes wrong",
+      "title": "Act fast: call 1930",
+      "hi_title": "तुरंत 1930 पर कॉल करें",
+      "visual": { "type": "stat", "big": "1930", "unit": "Cyber fraud helpline", "hi_unit": "साइबर धोखाधड़ी हेल्पलाइन" },
+      "bullets": [
+        { "icon": "📞", "en": "Call 1930 right away", "hi": "तुरंत 1930 पर कॉल करें" },
+        { "icon": "🌐", "en": "Report at cybercrime.gov.in", "hi": "cybercrime.gov.in पर शिकायत करें" },
+        { "icon": "🏦", "en": "Tell your bank to block it", "hi": "बैंक को बताकर ब्लॉक कराएँ" }
+      ],
+      "parts": [
+        { "reveal": 1, "hi": "अगर धोखे से पैसे चले जाएँ, तो देर न करें। तुरंत राष्ट्रीय साइबर हेल्पलाइन, उन्नीस सौ तीस, पर कॉल करें।", "en": "If money is lost to fraud, don't delay. Immediately call the national cyber helpline, 1930." },
+        { "reveal": 3, "hi": "साइबर क्राइम डॉट जीओवी डॉट इन पर शिकायत दर्ज करें, और अपने बैंक को बताएँ। जितनी जल्दी, पैसा वापस मिलने की उम्मीद उतनी ज़्यादा। अब क्विज़ से अपनी समझ जाँचिए!", "en": "File a complaint at cybercrime.gov.in and tell your bank. The sooner you act, the better the chance of getting the money back. Now test yourself with the quiz!" }
+      ]
+    }
+  ]
+}

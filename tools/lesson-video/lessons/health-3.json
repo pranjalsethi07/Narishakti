@@ -1,0 +1,110 @@
+{
+  "course": "Menstrual Health",
+  "lessonNo": 3,
+  "title": "Menstrual Hygiene",
+  "voice": "hi-IN-SwaraNeural",
+  "slides": [
+    {
+      "kicker": "Menstrual Health · Lesson 3",
+      "title": "Menstrual Hygiene",
+      "hi_title": "माहवारी में साफ़-सफ़ाई",
+      "visual": { "emoji": "🧼" },
+      "parts": [
+        { "hi": "नमस्ते! पिछले पाठ में हमने सीखा कि पीरियड्स क्या होते हैं। आज हम सीखेंगे कि उन दिनों में साफ़-सफ़ाई कैसे रखें।", "en": "Hello! In the last lesson we learnt what periods are. Today we will learn how to stay clean during those days." },
+        { "hi": "सही सफ़ाई से इन्फ़ेक्शन, खुजली और बदबू से बचाव होता है, और आप आत्मविश्वास से अपना हर काम कर पाती हैं।", "en": "Good hygiene protects you from infection, itching and odour, and lets you go about your day with confidence." }
+      ]
+    },
+    {
+      "kicker": "Choose what suits you",
+      "title": "Period products",
+      "hi_title": "पीरियड प्रोडक्ट्स",
+      "visual": { "emoji": "🛍️" },
+      "bullets": [
+        { "icon": "🩹", "en": "Sanitary pads (use once)", "hi": "सैनिटरी पैड (एक बार इस्तेमाल)" },
+        { "icon": "🧵", "en": "Clean cloth pads (reusable)", "hi": "साफ़ कपड़े के पैड (दोबारा इस्तेमाल)" },
+        { "icon": "🥤", "en": "Menstrual cup (reusable)", "hi": "मेंस्ट्रुअल कप (दोबारा इस्तेमाल)" }
+      ],
+      "parts": [
+        { "reveal": 1, "hi": "सैनिटरी पैड आसानी से मिलते हैं। सरकारी जन औषधि केंद्रों पर ये बहुत कम दाम में भी मिलते हैं।", "en": "Sanitary pads are easy to find. Government Jan Aushadhi Kendras also sell them at a very low price." },
+        { "reveal": 2, "hi": "साफ़ सूती कपड़े के पैड भी सुरक्षित हैं, बशर्ते उन्हें ठीक से धोया और सुखाया जाए।", "en": "Clean cotton cloth pads are also safe, as long as they are washed and dried properly." },
+        { "reveal": 3, "hi": "मेंस्ट्रुअल कप सिलिकॉन का बना होता है और सालों तक चल सकता है। आप जो भी चुनें, वह साफ़ होना चाहिए।", "en": "A menstrual cup is made of silicone and can last for years. Whatever you choose, it must be clean." }
+      ]
+    },
+    {
+      "kicker": "The golden rule",
+      "title": "Change on time",
+      "hi_title": "समय पर बदलें",
+      "visual": { "type": "stat", "big": "4–6", "unit": "hours", "hi_unit": "में पैड बदलें" },
+      "bullets": [
+        { "icon": "⏰", "en": "Change a pad every 4–6 hours", "hi": "हर 4–6 घंटे में पैड बदलें" },
+        { "icon": "🌙", "en": "Even on light days", "hi": "कम खून वाले दिनों में भी" }
+      ],
+      "parts": [
+        { "reveal": 1, "hi": "सबसे ज़रूरी नियम: पैड हर चार से छह घंटे में बदलें। एक ही पैड ज़्यादा देर तक रखने से कीटाणु बढ़ते हैं।", "en": "The most important rule: change your pad every four to six hours. Keeping one pad on too long lets germs grow." },
+        { "reveal": 2, "hi": "यह नियम कम खून वाले दिनों में भी लागू होता है।", "en": "This rule applies even on days when the flow is light." }
+      ]
+    },
+    {
+      "kicker": "Reusable cloth pads",
+      "title": "Wash, sun-dry, store",
+      "hi_title": "धोएँ, धूप में सुखाएँ, सँभालें",
+      "visual": { "emoji": "☀️", "caption": "sunlight kills germs" },
+      "bullets": [
+        { "icon": "🧼", "en": "Wash with soap and clean water", "hi": "साबुन और साफ़ पानी से धोएँ" },
+        { "icon": "☀️", "en": "Dry fully in direct sunlight", "hi": "पूरी तरह धूप में सुखाएँ" },
+        { "icon": "📦", "en": "Store in a clean, dry place", "hi": "साफ़, सूखी जगह पर रखें" }
+      ],
+      "parts": [
+        { "reveal": 1, "hi": "कपड़े के पैड को पहले ठंडे पानी से, फिर साबुन से अच्छी तरह धोएँ।", "en": "Wash a cloth pad first in cold water, then thoroughly with soap." },
+        { "reveal": 2, "hi": "उसे छुपाकर अंधेरे में न सुखाएँ। सीधी धूप कीटाणुओं को मारती है, इसलिए उसे धूप में पूरी तरह सुखाएँ।", "en": "Don't hide it to dry in the dark. Direct sunlight kills germs, so dry it fully in the sun." },
+        { "reveal": 3, "hi": "सूखने के बाद उसे एक साफ़ थैली में, सूखी जगह पर रखें।", "en": "Once dry, keep it in a clean bag in a dry place." }
+      ]
+    },
+    {
+      "kicker": "Keep yourself clean",
+      "title": "Body care",
+      "hi_title": "शरीर की सफ़ाई",
+      "visual": { "emoji": "🚿" },
+      "bullets": [
+        { "icon": "👐", "en": "Wash hands before and after", "hi": "पहले और बाद में हाथ धोएँ" },
+        { "icon": "💧", "en": "Plain water, front to back", "hi": "सादा पानी, आगे से पीछे की ओर" },
+        { "icon": "🚫", "en": "No harsh soap or perfume inside", "hi": "अंदर तेज़ साबुन या परफ़्यूम नहीं" }
+      ],
+      "parts": [
+        { "reveal": 1, "hi": "पैड बदलने से पहले और बाद में साबुन से हाथ ज़रूर धोएँ।", "en": "Always wash your hands with soap before and after changing a pad." },
+        { "reveal": 2, "hi": "जननांग को सादे पानी से धोएँ, और हमेशा आगे से पीछे की ओर साफ़ करें, ताकि कीटाणु न फैलें।", "en": "Wash the genital area with plain water, and always clean from front to back so germs don't spread." },
+        { "reveal": 3, "hi": "अंदर तेज़ साबुन, एंटीसेप्टिक या परफ़्यूम न लगाएँ। शरीर ख़ुद को अंदर से साफ़ रखता है।", "en": "Don't use harsh soap, antiseptic or perfume inside. The body keeps itself clean on the inside." }
+      ]
+    },
+    {
+      "kicker": "Disposal",
+      "title": "Throw away safely",
+      "hi_title": "सही तरीके से फेंकें",
+      "visual": { "emoji": "🗑️" },
+      "bullets": [
+        { "icon": "📰", "en": "Wrap the used pad in paper", "hi": "इस्तेमाल किया पैड कागज़ में लपेटें" },
+        { "icon": "🗑️", "en": "Put it in a covered dustbin", "hi": "ढक्कन वाले कूड़ेदान में डालें" },
+        { "icon": "🚽", "en": "Never flush it", "hi": "टॉयलेट में कभी न बहाएँ" }
+      ],
+      "parts": [
+        { "reveal": 2, "hi": "इस्तेमाल किए पैड को अख़बार या कागज़ में लपेटें, और ढक्कन वाले कूड़ेदान में डालें।", "en": "Wrap a used pad in newspaper or paper, and put it in a covered dustbin." },
+        { "reveal": 3, "hi": "पैड को कभी टॉयलेट में न बहाएँ। इससे नाली जाम हो जाती है।", "en": "Never flush a pad down the toilet. It blocks the drains." }
+      ]
+    },
+    {
+      "kicker": "Remember",
+      "title": "Key takeaways",
+      "hi_title": "याद रखें",
+      "visual": { "emoji": "💜" },
+      "bullets": [
+        { "icon": "⏰", "en": "Change every 4–6 hours", "hi": "हर 4–6 घंटे में बदलें" },
+        { "icon": "☀️", "en": "Sun-dry cloth pads", "hi": "कपड़े के पैड धूप में सुखाएँ" },
+        { "icon": "👐", "en": "Wash hands, clean front to back", "hi": "हाथ धोएँ, आगे से पीछे साफ़ करें" }
+      ],
+      "parts": [
+        { "reveal": 3, "hi": "तो याद रखिए: समय पर पैड बदलें, कपड़े के पैड धूप में सुखाएँ, और हाथ धोना कभी न भूलें।", "en": "So remember: change pads on time, dry cloth pads in the sun, and never forget to wash your hands." },
+        { "reveal": 3, "hi": "अगर खुजली, जलन या बदबू हो, तो शर्माएँ नहीं, डॉक्टर से मिलें। अब क्विज़ के लिए तैयार हो जाइए!", "en": "If you have itching, burning or a bad smell, don't feel shy: see a doctor. Now get ready for the quiz!" }
+      ]
+    }
+  ]
+}

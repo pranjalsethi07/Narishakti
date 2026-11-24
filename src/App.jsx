@@ -29,6 +29,7 @@ function App() {
           <Route index element={<Home />} />
           <Route path="ask" element={<AskAI />} />
           <Route path="learn" element={<Learn />} />
+          <Route path="learn/:courseId" element={<Learn />} />
           <Route path="daily-question" element={<DailyQuestion />} />
           <Route path="test" element={<TestKnowledge />} />
           <Route path="community" element={<Community />} />

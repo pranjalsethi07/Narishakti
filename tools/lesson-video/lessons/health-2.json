@@ -1,0 +1,111 @@
+{
+  "course": "Menstrual Health",
+  "lessonNo": 2,
+  "title": "Menstruation Basics",
+  "voice": "hi-IN-SwaraNeural",
+  "slides": [
+    {
+      "kicker": "Menstrual Health · Lesson 2",
+      "title": "Periods: Natural and Healthy",
+      "hi_title": "पीरियड्स: स्वाभाविक और स्वस्थ",
+      "visual": { "emoji": "🌸" },
+      "parts": [
+        { "hi": "नमस्ते! नारीशक्ति में आपका स्वागत है। आज हम सीखेंगे कि पीरियड्स, यानी माहवारी, क्या होते हैं।", "en": "Hello! Welcome to NariShakti. Today we will learn what periods, or menstruation, are." },
+        { "hi": "सबसे पहली बात: पीरियड्स कोई बीमारी नहीं हैं। यह शरीर की एक स्वस्थ और सामान्य प्रक्रिया है।", "en": "First things first: periods are not an illness. They are a healthy, normal process of the body." }
+      ]
+    },
+    {
+      "kicker": "What happens",
+      "title": "What happens each month?",
+      "hi_title": "हर महीने क्या होता है?",
+      "visual": { "emoji": "🔄", "caption": "a monthly cycle" },
+      "bullets": [
+        { "icon": "🏠", "en": "The uterus builds a soft lining", "hi": "गर्भाशय एक मुलायम परत बनाता है" },
+        { "icon": "🥚", "en": "An ovary releases an egg", "hi": "अंडाशय एक अंडा छोड़ता है" },
+        { "icon": "🩸", "en": "No pregnancy → the lining flows out", "hi": "गर्भ न ठहरे तो परत बाहर निकलती है" }
+      ],
+      "parts": [
+        { "reveal": 1, "hi": "हर महीने गर्भाशय, यानी यूटरस, अपने अंदर एक मुलायम परत बनाता है, ताकि वह गर्भ के लिए तैयार रहे।", "en": "Every month the uterus builds a soft lining inside it, so that it is ready for a pregnancy." },
+        { "reveal": 2, "hi": "लगभग उसी समय, अंडाशय, यानी ओवरी, से एक अंडा निकलता है।", "en": "Around the same time, an ovary releases an egg." },
+        { "reveal": 3, "hi": "अगर गर्भ नहीं ठहरता, तो यह परत खून के साथ योनि से बाहर निकल जाती है। इसी को पीरियड कहते हैं।", "en": "If there is no pregnancy, this lining leaves the body through the vagina as blood. This is called a period." }
+      ]
+    },
+    {
+      "kicker": "The cycle",
+      "title": "Your monthly cycle",
+      "hi_title": "आपका मासिक चक्र",
+      "visual": { "type": "cycle" },
+      "bullets": [
+        { "icon": "📅", "en": "A cycle is about 28 days", "hi": "चक्र लगभग 28 दिन का होता है" },
+        { "icon": "✅", "en": "21 to 35 days is also normal", "hi": "21 से 35 दिन भी सामान्य है" },
+        { "icon": "💧", "en": "Bleeding lasts 3 to 7 days", "hi": "खून 3 से 7 दिन तक आता है" }
+      ],
+      "parts": [
+        { "reveal": 1, "hi": "एक पीरियड के पहले दिन से अगले पीरियड के पहले दिन तक के समय को मासिक चक्र कहते हैं। यह आम तौर पर लगभग अट्ठाईस दिन का होता है।", "en": "The time from the first day of one period to the first day of the next is called the menstrual cycle. It is usually about 28 days." },
+        { "reveal": 2, "hi": "लेकिन हर शरीर अलग है। इक्कीस से पैंतीस दिन तक का चक्र भी बिल्कुल सामान्य है।", "en": "But every body is different. A cycle of 21 to 35 days is also completely normal." },
+        { "reveal": 3, "hi": "खून आम तौर पर तीन से सात दिन तक आता है।", "en": "Bleeding usually lasts three to seven days." }
+      ]
+    },
+    {
+      "kicker": "When it starts",
+      "title": "When do periods start?",
+      "hi_title": "पीरियड्स कब शुरू होते हैं?",
+      "visual": { "type": "stat", "big": "10–15", "unit": "years of age", "hi_unit": "साल की उम्र में" },
+      "bullets": [
+        { "icon": "🌱", "en": "Usually between ages 10 and 15", "hi": "आम तौर पर 10 से 15 साल की उम्र में" },
+        { "icon": "🔀", "en": "Irregular at first is normal", "hi": "शुरू में अनियमित होना सामान्य है" }
+      ],
+      "parts": [
+        { "reveal": 1, "hi": "ज़्यादातर लड़कियों में पीरियड्स दस से पंद्रह साल की उम्र के बीच शुरू होते हैं।", "en": "For most girls, periods start between the ages of ten and fifteen." },
+        { "reveal": 2, "hi": "शुरुआत के एक-दो साल तक चक्र आगे-पीछे होना भी सामान्य है। धीरे-धीरे यह नियमित हो जाता है।", "en": "For the first year or two, it is normal for the cycle to shift around. Slowly it becomes regular." }
+      ]
+    },
+    {
+      "kicker": "How you may feel",
+      "title": "Common, and okay",
+      "hi_title": "ये बदलाव सामान्य हैं",
+      "visual": { "emoji": "🤗" },
+      "bullets": [
+        { "icon": "🌀", "en": "Mild cramps in the lower belly", "hi": "पेट के निचले हिस्से में हल्का दर्द" },
+        { "icon": "😴", "en": "Tiredness or mood changes", "hi": "थकान या मूड में बदलाव" },
+        { "icon": "♨️", "en": "Relief: warm compress, water, a walk", "hi": "आराम: गर्म सेंक, पानी, हल्की सैर" }
+      ],
+      "parts": [
+        { "reveal": 1, "hi": "पीरियड्स के दौरान पेट के निचले हिस्से में हल्का दर्द या ऐंठन होना आम बात है।", "en": "Mild pain or cramps in the lower belly during periods are common." },
+        { "reveal": 2, "hi": "कुछ महिलाओं को थकान लगती है या मूड बदलता है। यह हार्मोन के बदलाव की वजह से होता है।", "en": "Some women feel tired or have mood changes. This happens because of changing hormones." },
+        { "reveal": 3, "hi": "गर्म पानी की बोतल से सेंक, भरपूर पानी पीना और हल्की सैर करना आराम दे सकता है।", "en": "A hot water bottle, drinking plenty of water and a light walk can bring relief." }
+      ]
+    },
+    {
+      "kicker": "Know when to get help",
+      "title": "When to see a doctor",
+      "hi_title": "डॉक्टर से कब मिलें",
+      "visual": { "emoji": "🩺" },
+      "bullets": [
+        { "icon": "⏳", "en": "Bleeding for more than 7 days", "hi": "7 दिन से ज़्यादा खून आना" },
+        { "icon": "🧻", "en": "Soaking a pad every 1–2 hours", "hi": "हर 1–2 घंटे में पैड भर जाना" },
+        { "icon": "⚠️", "en": "Pain that stops your daily work", "hi": "इतना दर्द कि रोज़ का काम रुक जाए" },
+        { "icon": "📭", "en": "No period for 3 months", "hi": "3 महीने तक पीरियड न आना" }
+      ],
+      "parts": [
+        { "reveal": 2, "hi": "कुछ संकेतों पर डॉक्टर से ज़रूर मिलें: अगर खून सात दिन से ज़्यादा आए, या हर एक-दो घंटे में पैड पूरा भर जाए।", "en": "See a doctor if you notice these signs: bleeding for more than seven days, or a pad soaking through every one to two hours." },
+        { "reveal": 4, "hi": "अगर दर्द इतना हो कि रोज़ का काम रुक जाए, या गर्भ न होने पर भी तीन महीने तक पीरियड न आए, तब भी डॉक्टर से बात करें।", "en": "Also talk to a doctor if the pain stops your daily work, or if your period does not come for three months when you are not pregnant." }
+      ]
+    },
+    {
+      "kicker": "Remember",
+      "title": "Key takeaways",
+      "hi_title": "याद रखें",
+      "visual": { "emoji": "💜" },
+      "bullets": [
+        { "icon": "🌸", "en": "Periods are natural, not impure", "hi": "पीरियड्स स्वाभाविक हैं, अशुद्ध नहीं" },
+        { "icon": "📲", "en": "Track your cycle in the Tracker", "hi": "ट्रैकर में अपना चक्र दर्ज करें" },
+        { "icon": "💬", "en": "Talk about it openly", "hi": "इस बारे में खुलकर बात करें" }
+      ],
+      "parts": [
+        { "reveal": 1, "hi": "तो याद रखिए: पीरियड्स स्वाभाविक हैं। इनमें कुछ भी अशुद्ध या शर्म की बात नहीं है।", "en": "So remember: periods are natural. There is nothing impure or shameful about them." },
+        { "reveal": 3, "hi": "नारीशक्ति के ट्रैकर में अपना चक्र दर्ज करें, और अपनी माँ, बहन, सहेली या डॉक्टर से खुलकर बात करें। अब एक छोटे से क्विज़ से अपनी समझ जाँचिए!", "en": "Record your cycle in NariShakti's Tracker, and talk openly with your mother, sister, friend or doctor. Now check what you learnt with a short quiz!" }
+      ]
+    }
+  ]
+}
