@@ -8,6 +8,7 @@ import { getLevelInfo } from '../utils/levels';
 import { getCrumbs } from './navConfig';
 import NotificationBell from './header/NotificationBell';
 import AvatarMenu from './header/AvatarMenu';
+import SosButton from './sos/SosButton';
 
 const TopNav = ({ isMobile = false, onMenuClick = () => {} }) => {
   const navigate = useNavigate();
@@ -97,6 +98,8 @@ const TopNav = ({ isMobile = false, onMenuClick = () => {} }) => {
           </button>
         )}
 
+        {/* on phones the menu (with its SOS button) is a hidden drawer, so SOS sits in the header too */}
+        {isMobile && <SosButton variant="header" />}
         <NotificationBell lang={lang} streak={streak} />
         <AvatarMenu lang={lang} setLang={setLang} t={t} />
       </div>

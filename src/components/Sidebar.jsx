@@ -4,6 +4,7 @@ import { useLanguage } from '../context/languageContextValue';
 import { ChevronDown, PanelLeftClose, PanelLeftOpen, MessageCircle, X } from 'lucide-react';
 import Logo from './Logo';
 import { NAV } from './navConfig';
+import SosButton from './sos/SosButton';
 
 const MIN_WIDTH = 76; // icon-only rail
 const MAX_WIDTH = 420;
@@ -228,6 +229,8 @@ const Sidebar = ({ isMobile = false, mobileOpen = false, onMobileClose = () => {
               );
             })}
       </nav>
+
+      <SosButton variant={collapsed ? 'rail' : 'full'} />
 
       {collapsed ? (
         <button
