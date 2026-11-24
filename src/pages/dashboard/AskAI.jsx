@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { Mic, Send, Volume2, StopCircle } from 'lucide-react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { Mic, Send, Volume2, StopCircle, Sparkles, ArrowRight, Clapperboard } from 'lucide-react';
+import { suggestFeatures } from '../../utils/featureSuggest';
 import { useLanguage } from '../../context/languageContextValue';
 import { incrementQuestionsAsked } from '../../utils/userProgress';
 import { apiFetch } from '../../utils/api';
@@ -18,6 +19,8 @@ const AskAI = () => {
   const recognitionRef = useRef(null);
   const transcriptRef = useRef('');
   const sendMessageRef = useRef(null);
+  // NariShakti features that fit what is being typed, shown live above the input
+  const liveFeatures = useMemo(() => suggestFeatures(input), [input]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -99,6 +102,8 @@ const AskAI = () => {
     const userText = text.trim();
     if (!userText || isThinking) return;
 
+    // the features that fit the question go with the answer, so they stay in the chat
+    const features = suggestFeatures(userText);
     const newMsg = { id: Date.now(), sender: 'user', text: userText, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) };
     setMessages(prev => [...prev, newMsg]);
     incrementQuestionsAsked();
@@ -140,7 +145,8 @@ const AskAI = () => {
         sender: 'ai',
         text: data.reply || 'Maaf kijiye, assistant ne empty response diya. Kripya dobara try karein.',
         time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
-        hasAudio: true
+        hasAudio: true,
+        features,
       }]);
     } catch (error) {
       const message = error?.name === 'AbortError'
@@ -151,6 +157,7 @@ const AskAI = () => {
         sender: 'ai',
         text: `Maaf kijiye, abhi server se connect nahi ho pa raha. (${message})`,
         time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+        features,
       }]);
     } finally {
       setIsThinking(false);
@@ -245,7 +252,8 @@ const AskAI = () => {
         <div style={styles.dateLabel}>Today</div>
         
         {messages.map(msg => (
-          <div key={msg.id} style={{
+          <React.Fragment key={msg.id}>
+          <div style={{
             ...styles.messageWrapper,
             justifyContent: msg.sender === 'user' ? 'flex-end' : 'flex-start'
           }}>
@@ -267,15 +275,32 @@ const AskAI = () => {
               </div>
             </div>
           </div>
+          {msg.features?.length > 0 && <FeatureCards features={msg.features} lang={lang} />}
+          </React.Fragment>
         ))}
 
-        <div style={styles.suggestionsContainer}>
-          <button style={styles.suggestionBtn} onClick={() => setInput("Ask about periods")}>"Ask about periods"</button>
-          <button style={styles.suggestionBtn} onClick={() => setInput("Check bank balance")}>"Check bank balance"</button>
-        </div>
+        {/* starter ideas, until the conversation begins or she starts typing */}
+        {messages.length === 1 && !input.trim() && (
+          <div style={styles.suggestionsContainer}>
+            <button style={styles.suggestionBtn} onClick={() => setInput("Ask about periods")}>"Ask about periods"</button>
+            <button style={styles.suggestionBtn} onClick={() => setInput("Check bank balance")}>"Check bank balance"</button>
+          </div>
+        )}
 
         <div ref={messagesEndRef} />
       </div>
+
+      {liveFeatures.length > 0 && !isThinking && (
+        <div style={styles.liveStrip} aria-live="polite">
+          <span style={styles.liveLabel}><Sparkles size={14} /> {lang === 'hi' ? 'नारीशक्ति पर देखें:' : 'Related on NariShakti:'}</span>
+          {liveFeatures.map((f) => (
+            <Link key={f.id} to={f.path} style={styles.livePill}>
+              <f.icon size={14} /> {f.title[lang] || f.title.en}
+              {f.video && <span style={styles.videoTag}>AI video</span>}
+            </Link>
+          ))}
+        </div>
+      )}
 
       <form style={styles.inputArea} onSubmit={handleSend}>
         <button 
@@ -305,7 +330,40 @@ const AskAI = () => {
   );
 };
 
+// Cards under an answer that take her to the NariShakti features that fit her question.
+const FeatureCards = ({ features, lang }) => (
+  <div style={styles.featureWrap}>
+    <p style={styles.featureHead}><Sparkles size={14} /> {lang === 'hi' ? 'नारीशक्ति पर यह भी मदद करेगा' : 'This can help too, on NariShakti'}</p>
+    <div style={styles.featureRow}>
+      {features.map((f) => (
+        <Link key={f.id} to={f.path} style={styles.featureCard} className="hover-card">
+          <span style={styles.featureIcon}><f.icon size={20} /></span>
+          <span style={{ flex: 1, minWidth: 0 }}>
+            <span style={styles.featureTitle}>{f.title[lang] || f.title.en}</span>
+            <span style={styles.featureReason}>
+              {f.video && <><Clapperboard size={12} style={{ verticalAlign: '-1px' }} /> {lang === 'hi' ? 'AI वीडियो · ' : 'AI video · '}</>}
+              {f.reason[lang] || f.reason.en}
+            </span>
+          </span>
+          <ArrowRight size={16} color="var(--primary)" />
+        </Link>
+      ))}
+    </div>
+  </div>
+);
+
 const styles = {
+  featureWrap: { maxWidth: '70%', marginTop: '-4px' },
+  featureHead: { display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 600, color: 'var(--primary-dark)', margin: '0 0 6px 4px' },
+  featureRow: { display: 'flex', flexWrap: 'wrap', gap: '8px' },
+  featureCard: { display: 'flex', alignItems: 'center', gap: '10px', flex: '1 1 220px', maxWidth: '320px', padding: '10px 12px', backgroundColor: 'var(--surface)', borderRadius: 'var(--radius-md)', border: '1px solid #e9ddff', boxShadow: 'var(--shadow-sm)', color: 'var(--text-dark)' },
+  featureIcon: { width: '38px', height: '38px', flexShrink: 0, borderRadius: '10px', display: 'grid', placeItems: 'center', backgroundColor: 'var(--primary-light)', color: 'var(--primary-dark)' },
+  featureTitle: { display: 'block', fontWeight: 600, fontSize: '0.92rem', lineHeight: 1.25 },
+  featureReason: { display: 'block', fontSize: '0.76rem', color: 'var(--text-muted)', lineHeight: 1.3, marginTop: '2px' },
+  liveStrip: { display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', padding: '10px 24px', backgroundColor: '#faf7ff', borderTop: '1px solid #ece4fb' },
+  liveLabel: { display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', fontWeight: 600, color: 'var(--primary-dark)' },
+  livePill: { display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 12px', borderRadius: 'var(--radius-full)', backgroundColor: 'var(--surface)', border: '1px solid var(--primary)', color: 'var(--primary-dark)', fontSize: '0.85rem', fontWeight: 500 },
+  videoTag: { fontSize: '0.65rem', fontWeight: 700, backgroundColor: '#2d2640', color: '#fff', borderRadius: '4px', padding: '1px 5px' },
   container: {
     width: '100%',
     margin: '0 auto',
