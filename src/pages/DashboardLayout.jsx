@@ -1,9 +1,19 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import TopNav from '../components/TopNav';
+import { useLanguage } from '../context/languageContextValue';
+
+// Pages that should not show the shared back button
+const NO_BACK_PATHS = ['/dashboard', '/dashboard/progress']; // progress has its own
 
 const DashboardLayout = () => {
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const { lang } = useLanguage();
+  const showBack = !NO_BACK_PATHS.includes(pathname.replace(/\/+$/, ''));
+
   return (
     <div style={styles.layout}>
       <Sidebar />
@@ -11,6 +21,11 @@ const DashboardLayout = () => {
         <TopNav />
         <main style={styles.content}>
           <div style={styles.container}>
+            {showBack && (
+              <button onClick={() => navigate('/dashboard')} style={styles.backBtn}>
+                <ArrowLeft size={20} /> {lang === 'hi' ? 'डैशबोर्ड पर वापस' : 'Back to Dashboard'}
+              </button>
+            )}
             <Outlet />
           </div>
         </main>
@@ -39,6 +54,20 @@ const styles = {
   container: {
     maxWidth: '1200px',
     margin: '0 auto',
+  },
+  backBtn: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    padding: '10px 16px',
+    backgroundColor: 'var(--surface)',
+    border: '1px solid var(--border-color)',
+    borderRadius: 'var(--radius-md)',
+    cursor: 'pointer',
+    fontSize: '1rem',
+    fontWeight: '600',
+    color: 'var(--text-dark)',
+    marginBottom: '24px',
   }
 };
 
