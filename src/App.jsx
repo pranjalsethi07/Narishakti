@@ -59,7 +59,8 @@ function App() {
         <Route path="/dashboard" element={<DashboardLayout />}>
           {pageRoutes}
         </Route>
-        <Route path="/m" element={<MobileLayout />}>
+        <Route path="/m" element={<LandingPage />} />
+        <Route path="/m/dashboard" element={<MobileLayout />}>
           {pageRoutes}
         </Route>
       </ModeRoutes>

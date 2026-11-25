@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
+import { appUrl } from '../utils/appMode';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Eye, EyeOff, ShieldCheck, Copy, Check, KeyRound } from 'lucide-react';
 import { useLanguage } from '../context/languageContextValue';
@@ -263,7 +264,7 @@ const AuthCard = () => {
     }
     rememberPerson(handle);
     // A full load, so her restored language and progress are picked up everywhere.
-    window.location.assign('/dashboard');
+    window.location.assign(appUrl('/dashboard'));
     return undefined;
   };
 

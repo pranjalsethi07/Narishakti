@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { appUrl } from '../../utils/appMode';
 import { useLanguage } from '../../context/languageContextValue';
 import {
   Award,
@@ -326,7 +327,7 @@ const Profile = () => {
     if (!confirmSignOut(lang)) return;
     await signOutDevice();
     localStorage.clear();
-    window.location.href = '/';
+    window.location.href = appUrl('/');
   };
 
   return (

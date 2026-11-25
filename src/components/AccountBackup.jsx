@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { appUrl } from '../utils/appMode';
 import { Cloud, CloudOff, KeyRound, Copy, Check, RefreshCw, Trash2 } from 'lucide-react';
 import { useLanguage } from '../context/languageContextValue';
 import { isSupabaseConfigured } from '../lib/supabaseClient';
@@ -136,7 +137,7 @@ const AccountBackup = () => {
     try {
       await deleteMyData();
       localStorage.clear();
-      window.location.href = '/';
+      window.location.href = appUrl('/');
     } catch {
       fail(ui.failed);
       setBusy(false);

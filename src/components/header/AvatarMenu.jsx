@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
+import { appUrl } from '../../utils/appMode';
 import { useNavigate } from 'react-router-dom';
 import { Check, ChevronDown, Globe, LogIn, LogOut, User, UserPlus, Trash2 } from 'lucide-react';
 import { useDismiss } from './useDismiss';
@@ -37,14 +38,14 @@ const AvatarMenu = ({ lang, setLang, t }) => {
     if (!confirmSignOut(lang)) return;
     await signOutDevice();
     localStorage.clear();
-    window.location.href = '/';
+    window.location.href = appUrl('/');
   };
 
   // A guest has no account, so clearing the device is the only way to "leave".
   const clearGuestData = () => {
     if (!confirmClearDevice(lang)) return;
     localStorage.clear();
-    window.location.href = '/';
+    window.location.href = appUrl('/');
   };
 
   return (

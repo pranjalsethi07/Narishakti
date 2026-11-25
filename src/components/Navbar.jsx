@@ -2,19 +2,25 @@ import React from 'react';
 import { useLanguage } from '../context/languageContextValue';
 import { Globe } from 'lucide-react';
 import Logo from './Logo';
+import { useMediaQuery } from '../utils/useMediaQuery';
 
 const Navbar = () => {
   const { t, lang, setLang } = useLanguage();
+  const narrow = useMediaQuery('(max-width: 600px)'); // phones: keep just the language picker
 
   return (
-    <nav style={styles.nav}>
+    <nav style={narrow ? { ...styles.nav, padding: '8px 14px' } : styles.nav}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <Logo width={70} showText={true} />
       </div>
       <div style={styles.links}>
-        <a href="#about" style={styles.link}>{t('aboutUsNav')}</a>
-        <a href="#shop" style={styles.link}>{t('shopNav')}</a>
-        <a href="#stories" style={styles.link}>{t('testimonialsNav')}</a>
+        {!narrow && (
+          <>
+            <a href="#about" style={styles.link}>{t('aboutUsNav')}</a>
+            <a href="#shop" style={styles.link}>{t('shopNav')}</a>
+            <a href="#stories" style={styles.link}>{t('testimonialsNav')}</a>
+          </>
+        )}
         
         <div style={styles.langToggleBox}>
           <Globe size={16} color="var(--primary)" />

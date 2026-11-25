@@ -7,7 +7,6 @@ import { lockedInfoFor } from '../lib/guestAccess';
 import { recordDailyActivity } from '../utils/userProgress';
 import { startSync } from '../lib/sync';
 import { setMobileMode, isNativeApp } from '../utils/appMode';
-import { useMediaQuery } from '../utils/useMediaQuery';
 import { NAV, getCrumbs } from '../components/navConfig';
 import CoinFlight from '../components/CoinFlight';
 import NotificationBell from '../components/header/NotificationBell';
@@ -17,15 +16,16 @@ import SosButton from '../components/sos/SosButton';
 
 // The phone version of the dashboard, reached at /m. Same pages as /dashboard, wrapped in an app-style shell:
 // a slim top bar, a bottom tab bar for the main places, and a "More" sheet for everything else.
+const BASE = '/m/dashboard';
 const TABS = [
-  { key: 'home', path: '/m', icon: Home, end: true, en: 'Home', hi: 'होम' },
-  { key: 'learn', path: '/m/learn', icon: BookOpen, en: 'Learn', hi: 'सीखें' },
-  { key: 'ask', path: '/m/ask', icon: Sparkles, en: 'Ask AI', hi: 'AI से पूछें' },
-  { key: 'schemes', path: '/m/schemes', icon: Landmark, en: 'Schemes', hi: 'योजनाएं' },
+  { key: 'home', path: BASE, icon: Home, end: true, en: 'Home', hi: 'होम' },
+  { key: 'learn', path: BASE + '/learn', icon: BookOpen, en: 'Learn', hi: 'सीखें' },
+  { key: 'ask', path: BASE + '/ask', icon: Sparkles, en: 'Ask AI', hi: 'AI से पूछें' },
+  { key: 'schemes', path: BASE + '/schemes', icon: Landmark, en: 'Schemes', hi: 'योजनाएं' },
 ];
 
 // '/dashboard/x' in the shared menu data becomes '/m/x' here.
-const toM = (path) => path.replace(/^\/dashboard/, '/m');
+const toM = (path) => path.replace(/^\/dashboard/, BASE);
 
 const MobileLayout = () => {
   const { pathname } = useLocation();
@@ -41,22 +41,19 @@ const MobileLayout = () => {
 
   useEffect(() => { startSync(); recordDailyActivity(); }, []);
 
-  const path = pathname.replace(/\/+$/, '') || '/m';
-  const isHome = path === '/m';
+  const path = pathname.replace(/\/+$/, '') || BASE;
+  const isHome = path === BASE;
   const isTab = TABS.some((tab) => tab.path === path);
-  // On a computer screen the app is drawn inside a phone outline; on a real phone it fills the screen.
-  const wideScreen = useMediaQuery('(min-width: 600px)');
-  const framed = wideScreen && !isNativeApp();
   const goBack = () => {
-    if (isTab || !(window.history.state?.idx > 0)) navigate('/m');
+    if (isTab || !(window.history.state?.idx > 0)) navigate(BASE);
     else navigate(-1);
   };
-  const crumbs = getCrumbs(path.replace(/^\/m/, '/dashboard'), t, lang);
-  const title = path === '/m' ? 'narishakti' : crumbs[crumbs.length - 1];
+  const crumbs = getCrumbs(path.replace(/^\/m/, ''), t, lang);
+  const title = crumbs[crumbs.length - 1];
 
   const goDesktop = () => {
     setMobileMode(false);
-    navigate(path.replace(/^\/m/, '/dashboard') || '/dashboard');
+    (window.top || window).location.assign(path.replace(/^\/m/, '') || '/dashboard'); // leave the phone outline too
   };
 
   const sections = NAV.flatMap((node) => {
@@ -68,9 +65,9 @@ const MobileLayout = () => {
   const singles = [];
   sections.forEach((s) => (s.heading ? grouped.push(s) : singles.push(...s.items)));
 
-  const content = (
-    <div style={framed ? styles.shellFramed : styles.shell}>
-      <header style={framed ? styles.topFramed : styles.top}>
+  return (
+    <div style={styles.shell}>
+      <header style={styles.top}>
         {isHome ? (
           <span style={styles.brandRow}><Logo width={36} showText={false} /><span style={styles.brand}>narishakti</span></span>
         ) : (
@@ -89,11 +86,11 @@ const MobileLayout = () => {
       </header>
 
       <CoinFlight />
-      <main style={framed ? styles.mainFramed : styles.main}>
+      <main style={styles.main}>
         <Outlet />
       </main>
 
-      <nav style={framed ? styles.tabBarFramed : styles.tabBar} aria-label={hi ? 'मुख्य मेनू' : 'Main menu'}>
+      <nav style={styles.tabBar} aria-label={hi ? 'मुख्य मेनू' : 'Main menu'}>
         {TABS.map((tab) => {
           const Icon = tab.icon;
           return (
@@ -110,7 +107,7 @@ const MobileLayout = () => {
       </nav>
 
       {moreOpen && (
-        <div style={framed ? styles.overlayFramed : styles.overlay} onClick={() => setMoreOpen(false)}>
+        <div style={styles.overlay} onClick={() => setMoreOpen(false)}>
           <div style={styles.sheet} role="dialog" aria-modal="true" aria-label={hi ? 'सभी सेक्शन' : 'All sections'} onClick={(e) => e.stopPropagation()}>
             <div style={styles.sheetHead}>
               <strong>{hi ? 'सभी सेक्शन' : 'All sections'}</strong>
@@ -145,16 +142,6 @@ const MobileLayout = () => {
       )}
     </div>
   );
-
-  if (!framed) return content;
-  return (
-    <div style={styles.stage}>
-      <div style={styles.device} data-phone-screen>
-        <div style={styles.notch} aria-hidden="true" />
-        {content}
-      </div>
-    </div>
-  );
 };
 
 const SheetItem = ({ item, t, locked }) => {
@@ -168,24 +155,10 @@ const SheetItem = ({ item, t, locked }) => {
   );
 };
 
-const MAX_W = 430; // on a wide screen the app is a centred phone-sized column
-const DEVICE_W = 390;
 const BAR = 62; // tab bar height, not counting the phone's bottom safe area
 
 const styles = {
-  // phone outline shown on computer screens
-  stage: { minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, background: 'radial-gradient(circle at 30% 20%, #3a2a55, #14101f 70%)' },
-  device: {
-    position: 'relative', width: DEVICE_W + 24, height: 'min(844px, calc(100dvh - 32px))', borderRadius: 52, border: '12px solid #0e0e12',
-    boxShadow: '0 0 0 2px #4a4a55, 0 30px 80px rgba(0,0,0,0.6)', overflow: 'hidden', backgroundColor: 'var(--bg-color)', transform: 'translateZ(0)', // makes fixed pop-ups (like SOS) stay inside the outline
-  },
-  notch: { position: 'absolute', top: 8, left: '50%', transform: 'translateX(-50%)', width: 96, height: 24, borderRadius: 14, backgroundColor: '#0e0e12', zIndex: 60 },
-  shellFramed: { position: 'relative', height: '100%', display: 'flex', flexDirection: 'column', backgroundColor: 'var(--bg-color)' },
-  topFramed: { flex: 'none', zIndex: 20, display: 'flex', alignItems: 'center', gap: 8, padding: '36px 12px 8px', backgroundColor: 'var(--surface)', borderBottom: '1px solid var(--border-color)' },
-  mainFramed: { flex: 1, minHeight: 0, overflowY: 'auto', overflowX: 'hidden', padding: 14 },
-  tabBarFramed: { flex: 'none', display: 'flex', height: BAR, backgroundColor: 'var(--surface)', borderTop: '1px solid var(--border-color)' },
-  overlayFramed: { position: 'absolute', inset: 0, zIndex: 40, backgroundColor: 'rgba(30,20,50,0.45)', display: 'flex', alignItems: 'flex-end' },
-  shell: { minHeight: '100dvh', width: '100%', maxWidth: MAX_W, margin: '0 auto', display: 'flex', flexDirection: 'column', backgroundColor: 'var(--bg-color)', boxShadow: '0 0 0 1px var(--border-color), 0 0 40px rgba(0,0,0,0.08)', position: 'relative' },
+  shell: { minHeight: '100dvh', width: '100%', display: 'flex', flexDirection: 'column', backgroundColor: 'var(--bg-color)', boxShadow: '0 0 0 1px var(--border-color), 0 0 40px rgba(0,0,0,0.08)', position: 'relative' },
   top: {
     position: 'sticky', top: 0, zIndex: 20, display: 'flex', alignItems: 'center', gap: '8px',
     padding: 'calc(env(safe-area-inset-top) + 8px) 12px 8px', backgroundColor: 'var(--surface)', borderBottom: '1px solid var(--border-color)',
@@ -197,14 +170,14 @@ const styles = {
   iconBtn: { width: 40, height: 40, borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-dark)', flexShrink: 0 },
   main: { flex: 1, minWidth: 0, padding: `14px 14px calc(${BAR}px + env(safe-area-inset-bottom) + 18px)`, overflowX: 'hidden' },
   tabBar: {
-    position: 'fixed', left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: MAX_W, bottom: 0, zIndex: 30, display: 'flex',
+    position: 'fixed', left: '50%', transform: 'translateX(-50%)', width: '100%', bottom: 0, zIndex: 30, display: 'flex',
     height: `calc(${BAR}px + env(safe-area-inset-bottom))`, paddingBottom: 'env(safe-area-inset-bottom)',
     backgroundColor: 'var(--surface)', borderTop: '1px solid var(--border-color)', boxShadow: '0 -4px 16px rgba(0,0,0,0.05)',
   },
   tab: { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3, fontSize: '0.72rem', fontFamily: 'inherit', background: 'none', border: 'none', minWidth: 0 },
   overlay: { position: 'fixed', inset: 0, zIndex: 40, backgroundColor: 'rgba(30,20,50,0.45)', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' },
   sheet: {
-    width: '100%', maxWidth: MAX_W, maxHeight: '85dvh', overflowY: 'auto', backgroundColor: 'var(--surface)', borderRadius: '20px 20px 0 0',
+    width: '100%', maxHeight: '85dvh', overflowY: 'auto', backgroundColor: 'var(--surface)', borderRadius: '20px 20px 0 0',
     padding: '14px 16px calc(env(safe-area-inset-bottom) + 18px)',
   },
   sheetHead: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 },

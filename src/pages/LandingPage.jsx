@@ -5,12 +5,14 @@ import { Mic, MessageCircle, Phone, ShoppingBag, HeartPulse, GraduationCap, Arro
 import TestimonialMarquee from '../components/TestimonialMarquee';
 import AuthCard from '../components/AuthCard';
 import PhotoMosaic from '../components/PhotoMosaic';
+import { useMediaQuery } from '../utils/useMediaQuery';
 
 // three.js is only downloaded for the landing page
 const LotusScene = lazy(() => import('../components/LotusScene'));
 
 const LandingPage = () => {
   const { t } = useLanguage();
+  const phone = useMediaQuery('(max-width: 600px)'); // on a phone the lotus comes after the sign-in card
 
   const products = [
     { name: "Organic Sanitary Pads", price: "₹299", image: "https://images.pexels.com/photos/4239013/pexels-photo-4239013.jpeg?auto=compress&cs=tinysrgb&w=800", link: "https://www.amazon.in/s?k=organic+sanitary+pads" },
@@ -18,6 +20,14 @@ const LandingPage = () => {
     { name: "Reusable Menstrual Cup", price: "₹350", image: "https://images.pexels.com/photos/4046974/pexels-photo-4046974.jpeg?auto=compress&cs=tinysrgb&w=800", link: "https://www.amazon.in/s?k=menstrual+cup" },
     { name: "Iron & Folic Acid Supplements", price: "₹200", image: "https://images.pexels.com/photos/593451/pexels-photo-593451.jpeg?auto=compress&cs=tinysrgb&w=800", link: "https://www.amazon.in/s?k=iron+and+folic+acid+tablets+for+women" }
   ];
+
+  const lotusBlock = (
+    <div style={phone ? { ...styles.lotusStage, margin: '8px auto 0' } : styles.lotusStage}>
+      <Suspense fallback={null}>
+        <LotusScene />
+      </Suspense>
+    </div>
+  );
 
   return (
     <div style={styles.page} className="landing-theme">
@@ -32,16 +42,13 @@ const LandingPage = () => {
             <p style={{fontSize: '1.1rem', color: 'var(--text-muted)', maxWidth: '46ch'}}>
               Experience a private, judgment-free space designed for the modern Indian woman.
             </p>
-            <div style={styles.lotusStage}>
-              <Suspense fallback={null}>
-                <LotusScene />
-              </Suspense>
-            </div>
+            {!phone && lotusBlock}
           </div>
 
           <div style={styles.formColumn}>
             <AuthCard />
           </div>
+          {phone && lotusBlock}
         </div>
       </section>
 
