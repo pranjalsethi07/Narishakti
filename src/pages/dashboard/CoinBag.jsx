@@ -60,7 +60,7 @@ const CoinBag = () => {
 
   return (
     <div style={styles.page}>
-      <button onClick={() => navigate('/dashboard')} style={styles.backBtn}>
+      <button className="page-back" onClick={() => navigate('/dashboard')} style={styles.backBtn}>
         <ArrowLeft size={20} /> {tr('Back', 'वापस')}
       </button>
 

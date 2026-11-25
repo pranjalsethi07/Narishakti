@@ -250,3 +250,7 @@ button {
   100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--pulse, #c53030) 0%, transparent); }
 }
 .pulse-ring { animation: pulseRing 2.2s ease-out infinite; }
+
+/* Phone version (/m): the top bar already has a back arrow, so drop the in-page "Back" buttons; keep the top bar roomy for the title. */
+[data-mobile-shell] .page-back { display: none !important; }
+[data-mobile-shell] .avatar-chev { display: none; }

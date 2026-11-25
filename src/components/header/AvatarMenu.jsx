@@ -63,7 +63,7 @@ const AvatarMenu = ({ lang, setLang, t }) => {
             ? <img src={photo} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             : <span style={{ color: '#fff', fontWeight: 'bold' }}>{initials}</span>}
         </span>
-        <ChevronDown size={16} color="var(--text-muted)" style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
+        <ChevronDown className="avatar-chev" size={16} color="var(--text-muted)" style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
       </button>
 
       {open && (

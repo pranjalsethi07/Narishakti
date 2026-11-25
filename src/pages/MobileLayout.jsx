@@ -66,7 +66,7 @@ const MobileLayout = () => {
   sections.forEach((s) => (s.heading ? grouped.push(s) : singles.push(...s.items)));
 
   return (
-    <div style={styles.shell}>
+    <div style={styles.shell} data-mobile-shell>
       <header style={styles.top}>
         {isHome ? (
           <span style={styles.brandRow}><Logo width={36} showText={false} /><span style={styles.brand}>narishakti</span></span>
@@ -165,8 +165,8 @@ const styles = {
   },
   brandRow: { display: 'flex', alignItems: 'center', gap: 6, minWidth: 0 },
   brand: { fontWeight: 800, fontSize: '1.2rem', color: 'var(--primary-dark)', letterSpacing: '-0.3px' },
-  title: { fontFamily: 'inherit', fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-dark)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', minWidth: 0 },
-  topActions: { display: 'flex', alignItems: 'center', gap: '8px', marginLeft: 'auto' },
+  title: { flex: 1, fontFamily: 'inherit', fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-dark)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', minWidth: 0 },
+  topActions: { display: 'flex', alignItems: 'center', gap: '4px', marginLeft: 'auto', flexShrink: 0 },
   iconBtn: { width: 40, height: 40, borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-dark)', flexShrink: 0 },
   main: { flex: 1, minWidth: 0, padding: `14px 14px calc(${BAR}px + env(safe-area-inset-bottom) + 18px)`, overflowX: 'hidden' },
   tabBar: {
