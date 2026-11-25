@@ -1,149 +1,111 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../../context/languageContextValue';
-import { Flame, TrendingUp, ArrowLeft, Plus } from 'lucide-react';
+import { Flame, TrendingUp, ArrowLeft, BookOpen, Gamepad2, MessageCircle, Check, Lock } from 'lucide-react';
+import { LEVELS, XP_RULES, getLevelInfo } from '../../utils/levels';
+import { getDayStreakCount, getQuestionsAskedCount, getTopicsCompletedCount } from '../../utils/userProgress';
+import { getProgress, totalBadges } from '../../data/gamesData';
+
+// Read-only: everything here is worked out from what you actually do in the app.
+const read = () => ({
+  info: getLevelInfo(),
+  streak: getDayStreakCount(),
+  lessons: getTopicsCompletedCount(),
+  badges: totalBadges(getProgress()),
+  questions: getQuestionsAskedCount(),
+});
 
 const Progress = () => {
   const navigate = useNavigate();
   const { lang } = useLanguage();
-  const [streaks, setStreaks] = useState(() => JSON.parse(localStorage.getItem('allStreaks') || '[]'));
-  const [levels, setLevels] = useState(() => JSON.parse(localStorage.getItem('allLevels') || '[]'));
-  const [newStreakDays, setNewStreakDays] = useState('');
-  const [newLevelNum, setNewLevelNum] = useState('');
-  const [newLevelName, setNewLevelName] = useState('');
+  const hi = lang === 'hi';
+  const [data, setData] = useState(read);
 
-  const addStreak = () => {
-    if (!newStreakDays.trim()) return;
-    const newStreak = {
-      id: Date.now(),
-      days: newStreakDays,
-      date: new Date().toLocaleDateString()
+  useEffect(() => {
+    const refresh = () => setData(read());
+    window.addEventListener('storage', refresh);
+    window.addEventListener('focus', refresh);
+    window.addEventListener('naari-progress-synced', refresh);
+    return () => {
+      window.removeEventListener('storage', refresh);
+      window.removeEventListener('focus', refresh);
+      window.removeEventListener('naari-progress-synced', refresh);
     };
-    const updated = [...streaks, newStreak];
-    setStreaks(updated);
-    localStorage.setItem('allStreaks', JSON.stringify(updated));
-    setNewStreakDays('');
-  };
+  }, []);
 
-  const addLevel = () => {
-    if (!newLevelNum.trim() || !newLevelName.trim()) return;
-    const newLevel = {
-      id: Date.now(),
-      number: newLevelNum,
-      name: newLevelName,
-      date: new Date().toLocaleDateString()
-    };
-    const updated = [...levels, newLevel];
-    setLevels(updated);
-    localStorage.setItem('allLevels', JSON.stringify(updated));
-    setNewLevelNum('');
-    setNewLevelName('');
-  };
+  const { info, streak, lessons, badges, questions } = data;
+  const name = (n) => (hi ? n.hi : n.en);
 
-  const deleteStreak = (id) => {
-    const updated = streaks.filter(s => s.id !== id);
-    setStreaks(updated);
-    localStorage.setItem('allStreaks', JSON.stringify(updated));
-  };
-
-  const deleteLevel = (id) => {
-    const updated = levels.filter(l => l.id !== id);
-    setLevels(updated);
-    localStorage.setItem('allLevels', JSON.stringify(updated));
-  };
+  const sources = [
+    { icon: BookOpen, color: '#1f9e8c', label: hi ? 'पूरे किए पाठ' : 'Lessons completed', count: lessons, xp: lessons * XP_RULES.lesson, rule: hi ? `हर पाठ पर ${XP_RULES.lesson} XP` : `${XP_RULES.lesson} XP each` },
+    { icon: Gamepad2, color: '#e53e3e', label: hi ? 'गेम बैज' : 'Game badges', count: badges, xp: badges * XP_RULES.badge, rule: hi ? `हर बैज पर ${XP_RULES.badge} XP` : `${XP_RULES.badge} XP each` },
+    { icon: MessageCircle, color: '#9b63e8', label: hi ? 'पूछे गए सवाल' : 'Questions asked', count: questions, xp: questions * XP_RULES.question, rule: hi ? `हर सवाल पर ${XP_RULES.question} XP` : `${XP_RULES.question} XP each` },
+    { icon: Flame, color: '#dd6b20', label: hi ? 'दिन की स्ट्रीक' : 'Day streak', count: streak, xp: streak * XP_RULES.streakDay, rule: hi ? `हर दिन पर ${XP_RULES.streakDay} XP` : `${XP_RULES.streakDay} XP per day` },
+  ];
 
   return (
     <div style={styles.page}>
       <button onClick={() => navigate('/dashboard')} style={styles.backBtn}>
-        <ArrowLeft size={20} /> {lang === 'hi' ? 'वापस' : 'Back'}
+        <ArrowLeft size={20} /> {hi ? 'वापस' : 'Back'}
       </button>
 
       <h1 className="h2" style={{ color: 'var(--primary-dark)', marginBottom: '32px' }}>
-        {lang === 'hi' ? 'आपकी प्रगति' : 'Your Progress'}
+        {hi ? 'आपकी प्रगति' : 'Your Progress'}
       </h1>
 
-      {/* STREAKS SECTION */}
+      {/* CURRENT LEVEL */}
       <section style={styles.section}>
-        <div style={styles.sectionHeader}>
-          <h2 className="h3" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <Flame color="#dd6b20" size={24} />
-            {lang === 'hi' ? 'स्ट्रीक्स' : 'Streaks'}
-          </h2>
-        </div>
-
-        <div style={styles.addForm}>
-          <input
-            type="number"
-            placeholder={lang === 'hi' ? 'दिन दर्ज करें' : 'Enter days'}
-            value={newStreakDays}
-            onChange={(e) => setNewStreakDays(e.target.value)}
-            style={styles.input}
-          />
-          <button onClick={addStreak} style={styles.addBtn}>
-            <Plus size={16} /> {lang === 'hi' ? 'जोड़ें' : 'Add'}
-          </button>
-        </div>
-
-        <div style={styles.recordsContainer}>
-          {streaks.length === 0 ? (
-            <p style={styles.emptyText}>{lang === 'hi' ? 'कोई स्ट्रीक सहेजा नहीं गया' : 'No streaks saved yet'}</p>
-          ) : (
-            streaks.map((streak) => (
-              <div key={streak.id} style={styles.recordCard}>
-                <div style={styles.recordContent}>
-                  <h4 style={styles.recordTitle}>{streak.days} {lang === 'hi' ? 'दिन' : 'Days'}</h4>
-                  <p style={styles.recordDate}>{streak.date}</p>
-                </div>
-                <button onClick={() => deleteStreak(streak.id)} style={styles.deleteBtn}>✕</button>
-              </div>
-            ))
-          )}
+        <h2 className="h3" style={styles.h}>
+          <TrendingUp color="var(--success)" size={24} />
+          {hi ? `स्तर ${info.level}: ${name(info.name)}` : `Level ${info.level}: ${name(info.name)}`}
+        </h2>
+        <p style={styles.muted}>
+          {info.next
+            ? (hi ? `${info.xp} XP कमाए · ${name(info.next.name)} तक ${info.toNext} XP और` : `${info.xp} XP earned · ${info.toNext} XP to ${name(info.next.name)}`)
+            : (hi ? `${info.xp} XP कमाए · आप सबसे ऊँचे स्तर पर हैं!` : `${info.xp} XP earned · you are at the top level!`)}
+        </p>
+        <div style={styles.bar} role="progressbar" aria-valuenow={info.percent} aria-valuemin={0} aria-valuemax={100}>
+          <div style={{ ...styles.barFill, width: `${info.percent}%` }} />
         </div>
       </section>
 
-      {/* LEVELS SECTION */}
+      {/* ALL LEVELS */}
       <section style={styles.section}>
-        <div style={styles.sectionHeader}>
-          <h2 className="h3" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <TrendingUp color="var(--success)" size={24} />
-            {lang === 'hi' ? 'स्तर' : 'Levels'}
-          </h2>
-        </div>
+        <h2 className="h3" style={styles.h}>{hi ? 'सभी स्तर' : 'All levels'}</h2>
+        <ol style={styles.list}>
+          {LEVELS.map((l, i) => {
+            const state = i + 1 < info.level ? 'done' : i + 1 === info.level ? 'here' : 'locked';
+            return (
+              <li key={l.min} style={{ ...styles.row, ...(state === 'here' ? styles.rowHere : null), opacity: state === 'locked' ? 0.65 : 1 }}>
+                <span style={{ ...styles.dot, background: state === 'locked' ? 'var(--border-color)' : 'var(--primary)' }}>
+                  {state === 'done' ? <Check size={16} color="#fff" /> : state === 'locked' ? <Lock size={14} color="var(--text-muted)" /> : <span style={{ color: '#fff', fontWeight: 700 }}>{i + 1}</span>}
+                </span>
+                <span style={{ flex: 1 }}>
+                  <strong>{hi ? 'स्तर' : 'Level'} {i + 1}: {name(l.name)}</strong>
+                  <span style={styles.small}>{l.min} XP{state === 'here' ? (hi ? ' · आप यहाँ हैं' : ' · you are here') : ''}</span>
+                </span>
+              </li>
+            );
+          })}
+        </ol>
+      </section>
 
-        <div style={styles.addForm}>
-          <input
-            type="number"
-            placeholder={lang === 'hi' ? 'स्तर संख्या' : 'Level number'}
-            value={newLevelNum}
-            onChange={(e) => setNewLevelNum(e.target.value)}
-            style={styles.input}
-          />
-          <input
-            type="text"
-            placeholder={lang === 'hi' ? 'स्तर का नाम' : 'Level name'}
-            value={newLevelName}
-            onChange={(e) => setNewLevelName(e.target.value)}
-            style={styles.input}
-          />
-          <button onClick={addLevel} style={styles.addBtn}>
-            <Plus size={16} /> {lang === 'hi' ? 'जोड़ें' : 'Add'}
-          </button>
-        </div>
-
-        <div style={styles.recordsContainer}>
-          {levels.length === 0 ? (
-            <p style={styles.emptyText}>{lang === 'hi' ? 'कोई स्तर सहेजा नहीं गया' : 'No levels saved yet'}</p>
-          ) : (
-            levels.map((level) => (
-              <div key={level.id} style={styles.recordCard}>
-                <div style={styles.recordContent}>
-                  <h4 style={styles.recordTitle}>{lang === 'hi' ? 'स्तर' : 'Lvl'} {level.number}: {level.name}</h4>
-                  <p style={styles.recordDate}>{level.date}</p>
+      {/* WHERE XP COMES FROM */}
+      <section style={styles.section}>
+        <h2 className="h3" style={styles.h}>{hi ? 'XP कैसे मिलता है' : 'How you earn XP'}</h2>
+        <div style={styles.grid}>
+          {sources.map((s) => {
+            const Icon = s.icon;
+            return (
+              <div key={s.label} style={styles.tile}>
+                <span style={{ ...styles.tileIcon, background: s.color }}><Icon size={20} color="#fff" /></span>
+                <div>
+                  <div style={{ fontWeight: 700 }}>{s.count} {s.label}</div>
+                  <div style={styles.small}>{s.rule} · <strong>+{s.xp} XP</strong></div>
                 </div>
-                <button onClick={() => deleteLevel(level.id)} style={styles.deleteBtn}>✕</button>
               </div>
-            ))
-          )}
+            );
+          })}
         </div>
       </section>
     </div>
@@ -153,18 +115,19 @@ const Progress = () => {
 const styles = {
   page: { padding: '24px', maxWidth: 'none', margin: '0 auto' },
   backBtn: { display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 16px', backgroundColor: 'var(--surface)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontSize: '1rem', fontWeight: '600', color: 'var(--text-dark)', marginBottom: '32px' },
-  section: { marginBottom: '40px', backgroundColor: 'var(--surface)', padding: '24px', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border-color)' },
-  sectionHeader: { marginBottom: '24px' },
-  addForm: { display: 'flex', gap: '12px', marginBottom: '24px', flexWrap: 'wrap' },
-  input: { flex: '1 1 200px', padding: '12px 16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', fontSize: '1rem', fontFamily: 'inherit', outline: 'none', backgroundColor: 'var(--bg-color)' },
-  addBtn: { padding: '12px 20px', backgroundColor: 'var(--primary)', color: '#fff', border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontSize: '1rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '8px' },
-  recordsContainer: { display: 'flex', flexDirection: 'column', gap: '12px' },
-  recordCard: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px', backgroundColor: 'var(--bg-color)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' },
-  recordContent: { flex: 1 },
-  recordTitle: { fontSize: '1.1rem', fontWeight: '600', color: 'var(--text-dark)', marginBottom: '4px' },
-  recordDate: { fontSize: '0.9rem', color: 'var(--text-muted)' },
-  deleteBtn: { padding: '8px 12px', backgroundColor: '#fee2e2', color: '#dc2626', border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontSize: '1rem', fontWeight: 'bold' },
-  emptyText: { textAlign: 'center', color: 'var(--text-muted)', padding: '32px 16px', fontSize: '1.1rem' }
+  section: { marginBottom: '32px', backgroundColor: 'var(--surface)', padding: '24px', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--border-color)' },
+  h: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' },
+  muted: { color: 'var(--text-muted)', marginBottom: '16px' },
+  bar: { height: 14, borderRadius: 999, background: 'var(--bg-color)', border: '1px solid var(--border-color)', overflow: 'hidden' },
+  barFill: { height: '100%', borderRadius: 999, background: 'linear-gradient(90deg, var(--primary), var(--accent, var(--primary-dark)))', transition: 'width .6s ease' },
+  list: { listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 10 },
+  row: { display: 'flex', alignItems: 'center', gap: 14, padding: '12px 16px', borderRadius: 'var(--radius-md)', background: 'var(--bg-color)', border: '1px solid var(--border-color)' },
+  rowHere: { borderColor: 'var(--primary)', boxShadow: '0 0 0 2px color-mix(in srgb, var(--primary) 25%, transparent)' },
+  dot: { width: 32, height: 32, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flex: '0 0 auto' },
+  small: { display: 'block', fontSize: '0.88rem', color: 'var(--text-muted)' },
+  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 14 },
+  tile: { display: 'flex', alignItems: 'center', gap: 14, padding: 16, borderRadius: 'var(--radius-md)', background: 'var(--bg-color)', border: '1px solid var(--border-color)' },
+  tileIcon: { width: 40, height: 40, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', flex: '0 0 auto' },
 };
 
 export default Progress;

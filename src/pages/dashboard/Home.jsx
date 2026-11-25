@@ -4,7 +4,7 @@ import { useLanguage } from '../../context/languageContextValue';
 import { useUserPhoto } from '../../utils/userPhoto';
 import HomeExtras from './HomeExtras';
 import ProgressRing from '../../components/ProgressRing';
-import { Lock, Gamepad2, MessageCircle, BookOpen, Lightbulb, ChevronRight, ShieldCheck, Users, Landmark, FileText, Flame, TrendingUp, Activity, Stethoscope } from 'lucide-react';
+import { Lock, Gamepad2, MessageCircle, BookOpen, Lightbulb, ChevronRight, ShieldCheck, Users, Landmark, FileText, Flame, TrendingUp, Activity, Stethoscope, Briefcase } from 'lucide-react';
 import { getContinueLearningMeta, getStoredLearnProgress } from '../../utils/learningProgress';
 import { recordDailyActivity, getDayStreakCount } from '../../utils/userProgress';
 import { getLevelInfo } from '../../utils/levels';
@@ -87,6 +87,7 @@ const Home = () => {
     { title: t("testKnowledge"), icon: ShieldCheck, color: '#dd6b20', path: '/dashboard/test' },
     { title: t("community"), icon: Users, color: '#3182ce', path: '/dashboard/community' },
     { title: t("schemes"), icon: Landmark, color: '#805ad5', path: '/dashboard/schemes' },
+    { title: t("opportunitiesWomen"), icon: Briefcase, color: '#b7791f', path: '/dashboard/opportunities-women' },
     { title: t("games"), icon: Gamepad2, color: '#e53e3e', path: '/dashboard/games' },
     { title: t("digitalDoctor"), icon: Stethoscope, color: '#2563eb', path: '/dashboard/digital-doctor' },
     { title: t("tracker"), icon: Activity, color: '#2c7a7b', path: '/dashboard/tracker' },
