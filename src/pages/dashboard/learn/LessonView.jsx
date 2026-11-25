@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, BookOpenText, Check, Clapperboard, Coins, ExternalLink, ListChecks, RotateCcw, Sparkles, Trophy } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ArrowLeft, ArrowRight, BookOpenText, Check, Clapperboard, Coins, ExternalLink, ListChecks, RotateCcw, Sparkles, Star, Trophy } from 'lucide-react';
 import { useLanguage } from '../../../context/languageContextValue';
 import { stepsOf } from '../../../data/courses';
+import { LESSON_CATEGORY, addFeedback, hasLessonFeedback } from '../../../lib/feedback';
 
 const STEP_META = {
   watch: { icon: Clapperboard, en: 'Watch', hi: 'देखें' },
@@ -12,7 +14,7 @@ const WATCH_TO_FINISH = 0.9; // share of the video that must be played before th
 
 // One lesson, step by step: Watch (if it has a video) → Read → Quiz. A step opens once the one before
 // is done; a finished lesson (or "Open all lessons") lets the learner move freely between steps.
-const LessonView = ({ course, lesson, lessonNo, doneSteps, finished, celebrate, onReview, openAll, onStepDone, onLessonDone, next }) => {
+const LessonView = ({ course, lesson, lessonNo, doneSteps, finished, celebrate, onReview, openAll, onStepDone, onLessonDone, next, coins = 0 }) => {
   const { lang } = useLanguage();
   const tr = (en, hi) => (lang === 'hi' ? hi : en);
   const L = (o) => o?.[lang] ?? o?.en;
@@ -30,7 +32,17 @@ const LessonView = ({ course, lesson, lessonNo, doneSteps, finished, celebrate, 
         <div className="lx-trophy"><Trophy size={44} color="#d69e2e" /></div>
         <h2 style={{ fontSize: '1.6rem' }}>{tr('Lesson complete!', 'पाठ पूरा हुआ!')}</h2>
         <p className="subtext" style={{ marginTop: 6 }}>{tr(`You finished Lesson ${lessonNo}: ${lesson.title.en}`, `आपने पाठ ${lessonNo} पूरा किया: ${lesson.title.hi}`)}</p>
-        <div className="lx-coins"><Coins size={18} /> {tr('+50 coins', '+50 सिक्के')}</div>
+        {coins > 0 ? (
+          <>
+            <div className="lx-coins" data-coin-source><Coins size={18} /> {tr(`+${coins} coins`, `+${coins} सिक्के`)}</div>
+            <p className="subtext" style={{ marginTop: 8, fontSize: '.9rem' }}>
+              {tr('Added to your ', 'आपके ')}<Link to="/dashboard/coins" style={{ fontWeight: 700 }}>{tr('Coin Bag', 'कॉइन बैग')}</Link>{tr('.', ' में जुड़ गए।')}
+            </p>
+          </>
+        ) : (
+          <p className="subtext" style={{ marginTop: 14, fontSize: '.9rem' }}>{tr('You already earned the coins for this lesson.', 'इस पाठ के सिक्के आप पहले ही कमा चुकी हैं।')}</p>
+        )}
+        <LessonFeedback courseId={course.id} lessonId={lesson.id} />
         <div className="lx-nav" style={{ justifyContent: 'center', marginTop: 24 }}>
           <button type="button" className="btn btn-secondary" onClick={() => { onReview(); setStepIdx(0); }}>
             <RotateCcw size={16} /> {tr('Review this lesson', 'यह पाठ दोहराएँ')}
@@ -102,6 +114,61 @@ const LessonView = ({ course, lesson, lessonNo, doneSteps, finished, celebrate, 
         />
       )}
     </div>
+  );
+};
+
+// "How was this lesson?" Shown once per lesson when it is finished. Saved on the device and, when
+// she is signed in, in her account.
+const LessonFeedback = ({ courseId, lessonId }) => {
+  const { lang } = useLanguage();
+  const tr = (en, hi) => (lang === 'hi' ? hi : en);
+  const [sent, setSent] = useState(() => hasLessonFeedback(courseId, lessonId));
+  const [rating, setRating] = useState(0);
+  const [hover, setHover] = useState(0);
+  const [text, setText] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [problem, setProblem] = useState('');
+
+  if (sent) {
+    return <p className="lx-fb-thanks" role="status"><Check size={16} /> {tr('Thanks for your feedback on this lesson.', 'इस पाठ पर आपकी राय के लिए धन्यवाद।')}</p>;
+  }
+
+  const send = async (e) => {
+    e.preventDefault();
+    if (!rating) { setProblem(tr('Please choose a star rating.', 'कृपया स्टार रेटिंग चुनें।')); return; }
+    setBusy(true);
+    try {
+      await addFeedback({ rating, category: LESSON_CATEGORY, message: text, course: courseId, lessonId });
+      setSent(true);
+    } catch {
+      setProblem(tr('Could not save. Please try again.', 'सहेज नहीं पाए। कृपया फिर कोशिश करें।'));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const shown = hover || rating;
+  return (
+    <form className="lx-fb" onSubmit={send} noValidate>
+      <h3>{tr('How was this lesson?', 'यह पाठ कैसा रहा?')}</h3>
+      <div role="radiogroup" aria-label={tr('Rating', 'रेटिंग')} className="lx-fb-stars" onMouseLeave={() => setHover(0)}>
+        {[1, 2, 3, 4, 5].map((n) => (
+          <button key={n} type="button" role="radio" aria-checked={rating === n} aria-label={`${n}`} onClick={() => { setRating(n); setProblem(''); }} onMouseEnter={() => setHover(n)}>
+            <Star size={30} color="#e8a317" fill={n <= shown ? '#e8a317' : 'none'} />
+          </button>
+        ))}
+      </div>
+      <textarea
+        value={text}
+        maxLength={300}
+        rows={2}
+        onChange={(e) => setText(e.target.value)}
+        placeholder={tr('Anything unclear or missing? (optional)', 'कुछ समझ नहीं आया या छूट गया? (वैकल्पिक)')}
+        aria-label={tr('Comment (optional)', 'टिप्पणी (वैकल्पिक)')}
+      />
+      {problem && <p role="alert" style={{ color: '#c53030', fontWeight: 600, fontSize: '.9rem' }}>{problem}</p>}
+      <button type="submit" className="btn btn-secondary" disabled={busy}>{busy ? tr('Saving...', 'सहेज रहे हैं...') : tr('Send feedback', 'राय भेजें')}</button>
+    </form>
   );
 };
 

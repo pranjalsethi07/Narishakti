@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from 'react';
 import { supabase } from './supabaseClient';
+import { fromRemoteRows, mergeLedgers, readLedger, toRemoteRows, writeLedger } from './coinLedger';
 import { mergeSnapshots, normId, rowsFromSnapshot, snapshotFromRemote, stableStringify } from './syncMerge';
 
 // Local-first sync. The app keeps reading and writing localStorage exactly as before, so it
@@ -18,7 +19,7 @@ const KEYS = {
   age: 'userAge',
   lang: 'appLang',
 };
-export const PROGRESS_STORAGE_KEYS = [KEYS.learn, KEYS.steps, KEYS.games, KEYS.tests, KEYS.streak, KEYS.questions];
+export const PROGRESS_STORAGE_KEYS = [KEYS.learn, KEYS.steps, KEYS.games, KEYS.tests, KEYS.streak, KEYS.questions, 'coinLedger'];
 
 const SYNCED_EVENT = 'naari-progress-synced';
 
@@ -119,6 +120,7 @@ let accountCache = { userId: null, accountId: null };
 export const forgetSyncState = () => {
   accountCache = { userId: null, accountId: null };
   lastPushed = '';
+  lastCoinsPushed = '';
 };
 const getAccountId = async () => {
   const userId = await ensureSession();
@@ -129,8 +131,20 @@ const getAccountId = async () => {
   return data;
 };
 
+// The signed-in account's id, or null for a guest / when cloud backup is off. Used by feedback.
+export const currentAccountId = async () => {
+  if (!supabase) return null;
+  try {
+    return await getAccountId();
+  } catch (error) {
+    if (error instanceof NotSignedInError) return null;
+    throw error;
+  }
+};
+
 // ---------------------------------------------------------------- one full sync
 let lastPushed = '';
+let lastCoinsPushed = '';
 
 const fetchRemote = async (accountId) => {
   const [profile, lessons, games, tests] = await Promise.all([
@@ -152,6 +166,27 @@ const pushRows = async (rows) => {
   const results = await Promise.all(writes);
   const failed = results.find((r) => r.error);
   if (failed) throw failed.error;
+};
+
+// The coin bag: join this device's ledger with the account's, then upload what the account lacks.
+// A problem here (for example the coin table is not created yet) never stops progress from syncing.
+const syncCoins = async (accountId) => {
+  try {
+    const { data, error } = await supabase.from('coin_ledger').select('id, kind, amount, created_at').eq('account_id', accountId);
+    if (error) throw error;
+    const local = readLedger();
+    const merged = mergeLedgers(local, fromRemoteRows(data));
+    if (stableStringify(merged) !== stableStringify(local)) writeLedger(merged);
+
+    const fingerprint = merged.map((e) => e.id).join('|');
+    if (fingerprint !== lastCoinsPushed) {
+      const { error: pushError } = await supabase.from('coin_ledger').upsert(toRemoteRows(accountId, merged), { onConflict: 'account_id,id', ignoreDuplicates: true });
+      if (pushError) throw pushError;
+      lastCoinsPushed = fingerprint;
+    }
+  } catch (error) {
+    console.warn('Coin sync failed:', error?.message || error);
+  }
 };
 
 const syncNow = async () => {
@@ -178,6 +213,7 @@ const syncNow = async () => {
       await pushRows(rows);
       lastPushed = fingerprint;
     }
+    await syncCoins(accountId);
     setStatus({ state: 'synced', lastSyncedAt: Date.now() });
   } catch (error) {
     if (error instanceof NotSignedInError) {
@@ -255,6 +291,7 @@ export const hasLocalProgress = () => {
     Object.keys(s.steps).length > 0 ||
     Object.keys(s.games).length > 0 ||
     Object.keys(s.tests).length > 0 ||
+    readLedger().length > 0 ||
     s.questions > 0
   );
 };
@@ -303,6 +340,7 @@ export const restoreWithCode = async (code) => {
   if (!data) return false;
   accountCache = { userId: null, accountId: null };
   lastPushed = '';
+  lastCoinsPushed = '';
   await syncNow();
   return true;
 };

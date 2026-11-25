@@ -1,0 +1,8 @@
+{
+  "appId": "com.narishakti.app",
+  "appName": "narishakti",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}

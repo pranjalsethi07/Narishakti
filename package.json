@@ -9,9 +9,14 @@
     "dev:full": "node server.js & vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "cap:sync": "vite build && cap sync",
+    "cap:android": "vite build && cap sync android && cap open android"
   },
   "dependencies": {
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/cli": "^8.6.2",
+    "@capacitor/core": "^8.6.2",
     "@google/genai": "^1.46.0",
     "@supabase/supabase-js": "^2.119.2",
     "cors": "^2.8.6",

@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Menu, Mic, Search, Globe, Flame, TrendingUp, ChevronRight } from 'lucide-react';
+import { Menu, Mic, Search, Globe, Flame, TrendingUp, ChevronRight, Wallet } from 'lucide-react';
 import { useLanguage } from '../context/languageContextValue';
 import { useMediaQuery } from '../utils/useMediaQuery';
-import { recordDailyActivity } from '../utils/userProgress';
+import { getDayStreakCount, recordDailyActivity } from '../utils/userProgress';
+import { useWalletBalance } from '../utils/coins';
 import { accountsEnabled, useAuth } from '../lib/auth';
 import { getLevelInfo } from '../utils/levels';
 import { getCrumbs } from './navConfig';
@@ -21,7 +22,14 @@ const TopNav = ({ isMobile = false, onMenuClick = () => {} }) => {
   const isGuest = accountsEnabled && auth.status === 'signedOut';
   const [query, setQuery] = useState('');
   // Count today as an active day as soon as the dashboard opens (safe to repeat).
-  const [streak] = useState(() => recordDailyActivity());
+  const [streak, setStreak] = useState(() => recordDailyActivity());
+  const coins = useWalletBalance();
+  // A restored streak (or a sync) changes the number: pick it up.
+  useEffect(() => {
+    const refresh = () => setStreak(getDayStreakCount());
+    window.addEventListener('naari-progress-synced', refresh);
+    return () => window.removeEventListener('naari-progress-synced', refresh);
+  }, []);
 
   const level = getLevelInfo();
   const crumbs = getCrumbs(pathname, t, lang);
@@ -85,6 +93,9 @@ const TopNav = ({ isMobile = false, onMenuClick = () => {} }) => {
                 : `${level.xp} XP`}
             >
               <TrendingUp size={16} /> {hi ? `स्तर ${level.level}` : `Lvl ${level.level}`}
+            </button>
+            <button type="button" data-coin-wallet style={{ ...styles.chip, color: '#975a16', backgroundColor: '#fffff0', borderColor: '#faf089' }} onClick={() => navigate('/dashboard/coins')} title={hi ? 'आपका वॉलेट (कॉइन बैग)' : 'Your wallet (Coin Bag)'} aria-label={hi ? `वॉलेट: ${coins} सिक्के` : `Wallet: ${coins} coins`}>
+              <Wallet size={16} color="#d69e2e" /> {coins}
             </button>
           </>
         )}

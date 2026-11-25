@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useMediaQuery } from '../../utils/useMediaQuery';
 import { HeartPulse, Wallet, Flame, HelpCircle, BookOpen, Award, Gamepad2, ArrowRight, Phone, Landmark, Baby, PiggyBank, Store } from 'lucide-react';
 import { useLanguage } from '../../context/languageContextValue';
 import { getDayStreakCount, getQuestionsAskedCount, getTopicsCompletedCount } from '../../utils/userProgress';
@@ -45,6 +46,10 @@ const HELPLINES = [
 
 const HomeExtras = () => {
   const navigate = useNavigate();
+  // On the phone screens (/m, or a narrow window) the three rings sit side by side in a row.
+  const inPhoneApp = useLocation().pathname.startsWith('/m');
+  const narrow = useMediaQuery('(max-width: 768px)');
+  const compact = inPhoneApp || narrow;
   const { lang } = useLanguage();
   const hi = lang === 'hi';
 
@@ -94,20 +99,20 @@ const HomeExtras = () => {
 
       <section style={styles.section}>
         <h2 className="h3" style={styles.heading}>{hi ? 'आपकी प्रगति' : 'Your Progress'}</h2>
-        <div style={styles.journey}>
-          <Journey
+        <div style={compact ? { ...styles.journey, ...styles.journeyCompact } : styles.journey}>
+          <Journey compact={compact}
             color="#d53f8c" track="#fed7e2"
             value={stats.healthDone / healthTotal}
             center={`${stats.healthDone}/${healthTotal}`}
             label={hi ? 'स्वास्थ्य पाठ' : 'Health lessons'}
           />
-          <Journey
+          <Journey compact={compact}
             color="#2c7a7b" track="#b2f5ea"
             value={stats.financeDone / financeTotal}
             center={`${stats.financeDone}/${financeTotal}`}
             label={hi ? 'वित्त पाठ' : 'Finance lessons'}
           />
-          <Journey
+          <Journey compact={compact}
             color="#d69e2e" track="#fefcbf"
             value={stats.badges / totalBadgeSlots}
             center={`${stats.badges}/${totalBadgeSlots}`}
@@ -115,10 +120,10 @@ const HomeExtras = () => {
             icon={<Award size={14} color="#d69e2e" />}
           />
         </div>
-        <div style={styles.statsGrid}>
-          <Stat icon={<Flame size={20} color="#dd6b20" />} tint={['#fffaf0', '#feebc8']} value={stats.streak} label={hi ? 'दिन की स्ट्रीक' : 'Day streak'} />
-          <Stat icon={<HelpCircle size={20} color="#3182ce" />} tint={['#ebf8ff', '#bee3f8']} value={stats.questions} label={hi ? 'पूछे गए प्रश्न' : 'Questions asked'} />
-          <Stat icon={<BookOpen size={20} color="#2c7a7b" />} tint={['#e6fffa', '#b2f5ea']} value={stats.topics} label={hi ? 'पूरे किए गए विषय' : 'Topics completed'} />
+        <div style={compact ? { ...styles.statsGrid, gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '8px' } : styles.statsGrid}>
+          <Stat compact={compact} icon={<Flame size={20} color="#dd6b20" />} tint={['#fffaf0', '#feebc8']} value={stats.streak} label={hi ? 'दिन की स्ट्रीक' : 'Day streak'} />
+          <Stat compact={compact} icon={<HelpCircle size={20} color="#3182ce" />} tint={['#ebf8ff', '#bee3f8']} value={stats.questions} label={hi ? 'पूछे गए प्रश्न' : 'Questions asked'} />
+          <Stat compact={compact} icon={<BookOpen size={20} color="#2c7a7b" />} tint={['#e6fffa', '#b2f5ea']} value={stats.topics} label={hi ? 'पूरे किए गए विषय' : 'Topics completed'} />
         </div>
         <button type="button" className="btn btn-secondary" style={{ marginTop: '16px' }} onClick={() => navigate('/dashboard/games')}>
           <Gamepad2 size={18} /> {hi ? 'गेम खेलकर और बैज जीतें' : 'Play games and earn more badges'}
@@ -182,25 +187,25 @@ const HomeExtras = () => {
   );
 };
 
-const Stat = ({ icon, tint, value, label }) => {
+const Stat = ({ icon, tint, value, label, compact }) => {
   const shown = useCountUp(value);
   return (
-    <div style={{ ...styles.stat, background: `linear-gradient(135deg, ${tint[0]}, ${tint[1]})` }}>
-      <span style={styles.statIcon}>{icon}</span>
-      <strong style={styles.statNumber}>{shown}</strong>
-      <span style={styles.statLabel}>{label}</span>
+    <div style={{ ...styles.stat, ...(compact ? { padding: '10px 8px', gap: '2px', alignItems: 'center', textAlign: 'center' } : {}), background: `linear-gradient(135deg, ${tint[0]}, ${tint[1]})` }}>
+      {!compact && <span style={styles.statIcon}>{icon}</span>}
+      <strong style={{ ...styles.statNumber, ...(compact ? { fontSize: '1.4rem' } : {}) }}>{shown}</strong>
+      <span style={{ ...styles.statLabel, ...(compact ? { fontSize: '0.72rem', lineHeight: 1.2 } : {}) }}>{label}</span>
     </div>
   );
 };
 
 // One ring with its number in the middle and a caption underneath.
-const Journey = ({ color, track, value, center, label, icon }) => (
+const Journey = ({ color, track, value, center, label, icon, compact }) => (
   <div style={styles.journeyItem}>
-    <ProgressRing value={value} size={108} stroke={11} color={color} track={track} label={`${label}: ${center}`}>
+    <ProgressRing value={value} size={compact ? 76 : 108} stroke={compact ? 8 : 11} color={color} track={track} label={`${label}: ${center}`}>
       {icon}
-      <strong style={{ fontSize: '1.25rem', color: 'var(--text-dark)' }}>{center}</strong>
+      <strong style={{ fontSize: compact ? '0.95rem' : '1.25rem', color: 'var(--text-dark)' }}>{center}</strong>
     </ProgressRing>
-    <span style={{ fontWeight: '600', color: 'var(--text-dark)' }}>{label}</span>
+    <span style={{ fontWeight: '600', color: 'var(--text-dark)', fontSize: compact ? '0.78rem' : undefined, lineHeight: 1.25 }}>{label}</span>
   </div>
 );
 
@@ -216,6 +221,7 @@ const styles = {
   tipTitle: { display: 'block', fontSize: '1.05rem', color: 'var(--text-dark)', marginBottom: '4px' },
   tipText: { color: 'var(--text-dark)', lineHeight: 1.5, fontSize: '0.98rem' },
   journey: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '20px', padding: '28px 20px', marginBottom: '16px', backgroundColor: 'var(--surface)', backgroundImage: 'linear-gradient(135deg, #faf5ff 0%, #ffffff 60%)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)' },
+  journeyCompact: { gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '8px', padding: '16px 8px' },
   journeyItem: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', textAlign: 'center' },
   statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' },
   stat: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '6px', padding: '18px', border: '1px solid rgba(0,0,0,0.04)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)' },

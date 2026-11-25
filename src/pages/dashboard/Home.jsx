@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useMediaQuery } from '../../utils/useMediaQuery';
 import { useLanguage } from '../../context/languageContextValue';
 import { useUserPhoto } from '../../utils/userPhoto';
 import HomeExtras from './HomeExtras';
@@ -8,6 +9,7 @@ import { Lock, Gamepad2, MessageCircle, BookOpen, Lightbulb, ChevronRight, Shiel
 import { getContinueLearningMeta, getStoredLearnProgress } from '../../utils/learningProgress';
 import { recordDailyActivity, getDayStreakCount } from '../../utils/userProgress';
 import { getLevelInfo } from '../../utils/levels';
+import { getRestoreOffer } from '../../utils/coins';
 import { accountsEnabled, useAuth } from '../../lib/auth';
 import { lockedInfoFor } from '../../lib/guestAccess';
 
@@ -30,7 +32,7 @@ const BannerArt = () => (
 );
 
 // A vivid gradient card with a big faint icon as a watermark.
-const Card = ({ title, icon, color, onClick, index, locked = false }) => {
+const Card = ({ title, icon, color, onClick, index, locked = false, compact = false }) => {
   const Icon = icon;
   return (
     <button
@@ -39,12 +41,13 @@ const Card = ({ title, icon, color, onClick, index, locked = false }) => {
       onClick={onClick}
       style={{
         ...styles.card,
+        ...(compact ? styles.cardC : {}),
         background: `linear-gradient(135deg, color-mix(in srgb, ${color} 88%, #1a1030), color-mix(in srgb, ${color} 52%, #1a1030))`,
         '--i': index,
       }}
     >
       <span className="bubble" style={styles.bubble}><Icon color="#fff" size={22} /></span>
-      <h3 style={styles.cardTitle}>{title}</h3>
+      <h3 style={{ ...styles.cardTitle, ...(compact ? { fontSize: '0.95rem', lineHeight: 1.25 } : {}) }}>{title}</h3>
       <Icon className="watermark" size={96} color="#fff" style={styles.watermark} aria-hidden="true" />
       {locked && <span style={styles.lockBadge} aria-label="Sign in needed"><Lock size={14} color="#fff" /></span>}
     </button>
@@ -53,6 +56,10 @@ const Card = ({ title, icon, color, onClick, index, locked = false }) => {
 
 const Home = () => {
   const navigate = useNavigate();
+  // Phone screens (/m, or a narrow window) get a tighter layout.
+  const inPhoneApp = useLocation().pathname.startsWith('/m');
+  const narrow = useMediaQuery('(max-width: 768px)');
+  const compact = inPhoneApp || narrow;
   const { t, lang } = useLanguage();
   const photo = useUserPhoto();
   const auth = useAuth();
@@ -61,11 +68,13 @@ const Home = () => {
   const [learnMeta, setLearnMeta] = useState(() => getContinueLearningMeta(getStoredLearnProgress()));
   const [dayStreak, setDayStreak] = useState(getDayStreakCount());
   const [levelInfo, setLevelInfo] = useState(() => getLevelInfo());
+  const [restore, setRestore] = useState(() => getRestoreOffer());
 
   useEffect(() => {
     const refreshLearningMeta = () => {
       setLearnMeta(getContinueLearningMeta(getStoredLearnProgress()));
       setDayStreak(recordDailyActivity());
+      setRestore(getRestoreOffer());
       setLevelInfo(getLevelInfo()); // after the streak is recorded, so today's streak XP counts
     };
 
@@ -98,20 +107,20 @@ const Home = () => {
 
   return (
     <div className="fade-in">
-      <header style={styles.header}>
+      <header style={compact ? { ...styles.header, ...styles.headerC } : styles.header}>
         <BannerArt />
         <div style={styles.greeting}>
-          <div style={styles.bannerAvatar}>
+          <div style={compact ? { ...styles.bannerAvatar, ...styles.bannerAvatarC } : styles.bannerAvatar}>
             {photo
               ? <img src={photo} alt={userName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              : <span style={{ fontSize: '1.6rem', fontWeight: '600', color: 'var(--primary)' }}>{userName.charAt(0).toUpperCase()}</span>}
+              : <span style={{ fontSize: compact ? '1.2rem' : '1.6rem', fontWeight: '600', color: 'var(--primary)' }}>{userName.charAt(0).toUpperCase()}</span>}
           </div>
           <div>
-            <h1 className="h2" style={styles.bannerTitle}>{t('namaste')} {userName}</h1>
-            <p style={styles.bannerSub}>{t('welcome')}</p>
+            <h1 className="h2" style={compact ? { ...styles.bannerTitle, ...styles.bannerTitleC } : styles.bannerTitle}>{t('namaste')} {userName}</h1>
+            <p style={compact ? { ...styles.bannerSub, fontSize: '0.88rem', marginTop: '2px' } : styles.bannerSub}>{t('welcome')}</p>
           </div>
         </div>
-        <div style={styles.statsContainer}>
+        <div style={compact ? { ...styles.statsContainer, gap: '8px' } : styles.statsContainer}>
           <button
             onClick={() => navigate('/dashboard/progress')}
             style={styles.statBox}
@@ -144,6 +153,19 @@ const Home = () => {
         </div>
       </header>
 
+      {restore.lost && (
+        <button type="button" onClick={() => navigate('/dashboard/coins')} style={styles.dailyBanner} className="hover-card">
+          <span style={styles.bulb}><Flame size={22} color="#dd6b20" /></span>
+          <span style={{ flex: 1, textAlign: 'left' }}>
+            <strong style={styles.dailyTitle}>{lang === 'hi' ? `आपकी ${restore.lost.lostStreak} दिन की स्ट्रीक टूट गई` : `Your ${restore.lost.lostStreak}-day streak broke`}</strong>
+            <span style={styles.dailySub}>{restore.cost == null
+              ? (lang === 'hi' ? 'इस महीने के रीस्टोर खत्म हो गए' : 'No restores left this month')
+              : (lang === 'hi' ? `${restore.cost} सिक्कों में वापस पाएँ` : `Win it back for ${restore.cost} coins`)}</span>
+          </span>
+          <ChevronRight size={22} color="#b7791f" />
+        </button>
+      )}
+
       <button type="button" onClick={() => navigate('/dashboard/daily-question')} style={styles.dailyBanner} className="hover-card">
         <span style={styles.bulb}><Lightbulb size={22} color="#b7791f" /></span>
         <span style={{ flex: 1, textAlign: 'left' }}>
@@ -155,11 +177,12 @@ const Home = () => {
 
       <section style={styles.section}>
         <h2 className="h3" style={{marginBottom: '16px'}}>{t('quickActions')}</h2>
-        <div style={styles.grid} className="stagger">
+        <div style={compact ? { ...styles.grid, ...styles.gridC } : styles.grid} className="stagger">
           {features.map((feat, i) => (
             <Card
               key={feat.title}
               index={i}
+              compact={compact}
               title={feat.title}
               icon={feat.icon}
               color={feat.color}
@@ -204,6 +227,11 @@ const Home = () => {
 
 const styles = {
   header: { position: 'relative', overflow: 'hidden', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '32px', padding: '28px 32px', borderRadius: 'var(--radius-lg)', background: 'linear-gradient(120deg, #7a4bb7 0%, var(--primary) 45%, var(--secondary) 100%)', boxShadow: 'var(--shadow-lg)' },
+  headerC: { gap: '12px', marginBottom: '18px', padding: '16px' },
+  bannerAvatarC: { width: '46px', height: '46px', borderWidth: '2px' },
+  bannerTitleC: { fontSize: '1.3rem', lineHeight: 1.2, overflowWrap: 'anywhere' },
+  gridC: { gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '12px' },
+  cardC: { minHeight: '104px', padding: '14px', gap: '10px' },
   art: { position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', borderRadius: 'inherit' },
   greeting: { position: 'relative', display: 'flex', alignItems: 'center', gap: '16px' },
   bannerAvatar: { width: '68px', height: '68px', borderRadius: '50%', overflow: 'hidden', flexShrink: 0, backgroundColor: '#fff', border: '3px solid rgba(255,255,255,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 16px rgba(0,0,0,0.18)' },

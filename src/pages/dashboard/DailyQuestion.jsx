@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
-import { Volume2, Trophy, Flame, CheckCircle2, XCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Volume2, Trophy, Flame, CheckCircle2, XCircle, Coins } from 'lucide-react';
+import { awardDailyCoins, COIN_RULES, hasClaimedDaily } from '../../utils/coins';
+import { getDayStreakCount } from '../../utils/userProgress';
 
 const DailyQuestion = () => {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
+  const [claimed, setClaimed] = useState(hasClaimedDaily);
+  const [streak] = useState(getDayStreakCount);
 
   const questionData = {
     category: "Financial Literacy",
@@ -32,7 +37,7 @@ const DailyQuestion = () => {
         </div>
         <div style={styles.streakBox}>
           <Flame color="#dd6b20" size={24} />
-          <span style={styles.streakText}>5 Day Streak!</span>
+          <span style={styles.streakText}>{streak} Day Streak!</span>
         </div>
       </header>
 
@@ -100,9 +105,17 @@ const DailyQuestion = () => {
             <p style={{marginTop: '8px'}}>
               Bank account deposits are regulated and insured, making them the safest place for savings while earning interest.
             </p>
-            <button className="btn btn-primary" style={{marginTop: '16px'}}>
-              Claim 10 Coins
-            </button>
+            {isCorrect && (
+              claimed ? (
+                <p data-coin-source style={{marginTop: '16px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px'}}>
+                  <Coins size={18} color="#d69e2e" /> Today&apos;s coins are in your <Link to="/dashboard/coins">Coin Bag</Link>.
+                </p>
+              ) : (
+                <button className="btn btn-primary" style={{marginTop: '16px'}} onClick={() => { awardDailyCoins(); setClaimed(true); }}>
+                  Claim {COIN_RULES.daily} Coins
+                </button>
+              )
+            )}
           </div>
         )}
       </div>

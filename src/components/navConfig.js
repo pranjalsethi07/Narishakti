@@ -1,6 +1,6 @@
 import {
   LayoutDashboard, BookOpen, Sparkles, Lightbulb, ShieldCheck, Gamepad2, GraduationCap, HeartPulse,
-  Stethoscope, Activity, FileText, Users, Briefcase, Landmark, User,
+  Stethoscope, Activity, FileText, Users, Briefcase, Landmark, User, MessageSquareHeart, Coins,
 } from 'lucide-react';
 
 // The dashboard menu: single links and groups (a group has a heading and sub-items).
@@ -34,6 +34,8 @@ export const NAV = [
   },
   { type: 'link', key: 'schemes', path: '/dashboard/schemes', icon: Landmark },
   { type: 'link', key: 'profile', path: '/dashboard/profile', icon: User },
+  { type: 'link', key: 'coinBag', path: '/dashboard/coins', icon: Coins },
+  { type: 'link', key: 'feedback', path: '/dashboard/feedback', icon: MessageSquareHeart },
 ];
 
 // Pages that are not in the menu but still need a title in the header.

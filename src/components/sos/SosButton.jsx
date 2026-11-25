@@ -101,7 +101,7 @@ export const SosButton = ({ variant = 'full', onOpen }) => {
           'SOS'
         )}
       </button>
-      {open && createPortal(<SosPanel onClose={() => setOpen(false)} />, document.body)}
+      {open && createPortal(<SosPanel onClose={() => setOpen(false)} />, document.querySelector('[data-phone-screen]') || document.body)}
     </>
   );
 };

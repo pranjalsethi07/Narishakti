@@ -3,6 +3,7 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, UserRound, X } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import TopNav from '../components/TopNav';
+import CoinFlight from '../components/CoinFlight';
 import { useLanguage } from '../context/languageContextValue';
 import { useMediaQuery } from '../utils/useMediaQuery';
 import { startSync } from '../lib/sync';
@@ -41,6 +42,7 @@ const DashboardLayout = () => {
       <Sidebar isMobile={isMobile} mobileOpen={menuOpen} onMobileClose={closeMenu} />
       <div style={styles.mainWrapper}>
         <TopNav isMobile={isMobile} onMenuClick={() => setMenuOpen(true)} />
+        <CoinFlight />
         <main style={{ ...styles.content, padding: isMobile ? '16px' : '32px' }}>
           <div style={styles.container}>
             {isGuest && !bannerHidden && (

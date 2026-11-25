@@ -162,3 +162,11 @@
   .lx-demo { width: 100%; }
   .lx-panel { padding: 16px; }
 }
+
+/* "How was this lesson?" on the lesson-complete screen */
+.lx-fb { margin: 22px auto 0; max-width: 420px; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px 18px; border-radius: 16px; border: 1px solid #e6dff3; background: rgba(255,255,255,.35); }
+.lx-fb h3 { font-size: 1.02rem; }
+.lx-fb-stars { display: flex; gap: 4px; }
+.lx-fb-stars button { background: none; border: none; padding: 2px; cursor: pointer; line-height: 0; }
+.lx-fb textarea { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid #e6dff3; font: inherit; resize: vertical; background: #fff; }
+.lx-fb-thanks { display: inline-flex; align-items: center; gap: 6px; margin-top: 18px; color: #2f855a; font-weight: 600; }

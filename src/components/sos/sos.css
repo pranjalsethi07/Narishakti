@@ -47,3 +47,14 @@
 .sos-add input:focus { outline: 2px solid #feb2b2; border-color: #fc8181; }
 .sos-note { font-size: .76rem; color: var(--text-muted); }
 .sos-msg { font-size: .82rem; padding: 10px 12px; border-radius: 12px; background: #f7fafc; color: #4a5568; white-space: pre-wrap; }
+
+/* On a phone (or inside the /m phone outline on a computer) the panel is a sheet that rises from the bottom. */
+[data-phone-screen] .sos-backdrop { position: absolute; z-index: 80; }
+[data-phone-screen] .sos-panel { max-height: 90%; }
+[data-phone-screen] .sos-help { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 600px) {
+  .sos-backdrop { align-items: flex-end; padding: 0; }
+  .sos-panel { width: 100%; max-height: 92dvh; border-radius: 22px 22px 0 0; }
+}
+[data-phone-screen] .sos-backdrop { align-items: flex-end; padding: 0; }
+[data-phone-screen] .sos-panel { width: 100%; border-radius: 22px 22px 0 0; }

@@ -7,6 +7,7 @@ import {
   coursePercent, getLessonSteps, getOpenAll, getStoredLearnProgress, lessonFraction,
   markLessonDone, markStepDone, setOpenAll,
 } from '../../../utils/learningProgress';
+import { awardLessonCoins, COIN_RULES } from '../../../utils/coins';
 import ProgressRing from '../../../components/ProgressRing';
 import LessonView from './LessonView';
 
@@ -34,6 +35,8 @@ const CoursePage = ({ courseId }) => {
   const [openAll, setOpenAllState] = useState(getOpenAll);
   // the lesson just finished: kept on screen (its "complete" view) until the learner moves on
   const [justDone, setJustDone] = useState(null);
+  // coins given for the lesson just finished (0 when she had already earned them)
+  const [coinsGiven, setCoinsGiven] = useState(0);
 
   const states = useMemo(() => (course ? lessonStates(course, progress, openAll) : []), [course, progress, openAll]);
   if (!course) return <Navigate to="/dashboard/learn" replace />;
@@ -64,6 +67,7 @@ const CoursePage = ({ courseId }) => {
   const stepDone = (step) => setSteps({ ...markStepDone(course.id, lesson.id, step) });
   const lessonDone = () => {
     setJustDone(lesson.id);
+    setCoinsGiven(awardLessonCoins(course.id, lesson.id) ? COIN_RULES.lesson : 0);
     setProgress({ ...markLessonDone(course.id, lesson.id) });
     setSteps(getLessonSteps());
   };
@@ -140,6 +144,7 @@ const CoursePage = ({ courseId }) => {
               doneSteps={steps[`${course.id}-${lesson.id}`] || []}
               finished={state === 'done'}
               celebrate={justDone === lesson.id}
+              coins={coinsGiven}
               onReview={() => setJustDone(null)}
               openAll={openAll}
               onStepDone={stepDone}
