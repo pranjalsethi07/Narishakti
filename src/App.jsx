@@ -19,6 +19,7 @@ import Progress from './pages/dashboard/Progress';
 import Games from './pages/dashboard/Games';
 import GamePlay from './pages/dashboard/GamePlay';
 import GameLevels from './pages/dashboard/GameLevels';
+import RequireAccount from './components/RequireAccount';
 
 function App() {
   return (
@@ -32,13 +33,13 @@ function App() {
           <Route path="learn/:courseId" element={<Learn />} />
           <Route path="daily-question" element={<DailyQuestion />} />
           <Route path="test" element={<TestKnowledge />} />
-          <Route path="community" element={<Community />} />
+          <Route path="community" element={<RequireAccount><Community /></RequireAccount>} />
           <Route path="schemes" element={<Schemes />} />
           <Route path="scanner" element={<Scanner />} />
-          <Route path="profile" element={<Profile />} />
+          <Route path="profile" element={<RequireAccount><Profile /></RequireAccount>} />
           <Route path="whatsapp" element={<WhatsApp />} />
-          <Route path="tracker" element={<Tracker />} />
-          <Route path="digital-doctor" element={<DigitalDoctor />} />
+          <Route path="tracker" element={<RequireAccount><Tracker /></RequireAccount>} />
+          <Route path="digital-doctor" element={<RequireAccount><DigitalDoctor /></RequireAccount>} />
           <Route path="opportunities-women" element={<OpportunitiesWomen />} />
           <Route path="progress" element={<Progress />} />
           <Route path="games" element={<Games />} />

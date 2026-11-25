@@ -1,31 +1,16 @@
-import React, { useState, lazy, Suspense } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { lazy, Suspense } from 'react';
 import Navbar from '../components/Navbar';
 import { useLanguage } from '../context/languageContextValue';
-import { Mic, MessageCircle, Phone, ShoppingBag, ShieldCheck, HeartPulse, GraduationCap, ArrowRight, Quote } from 'lucide-react';
+import { Mic, MessageCircle, Phone, ShoppingBag, HeartPulse, GraduationCap, ArrowRight } from 'lucide-react';
+import TestimonialMarquee from '../components/TestimonialMarquee';
+import AuthCard from '../components/AuthCard';
+import PhotoMosaic from '../components/PhotoMosaic';
 
 // three.js is only downloaded for the landing page
 const LotusScene = lazy(() => import('../components/LotusScene'));
 
 const LandingPage = () => {
-  const navigate = useNavigate();
-  const { t, setLang } = useLanguage();
-  const [name, setName] = useState('');
-  const [age, setAge] = useState('');
-  const [preferredLanguage, setPreferredLanguage] = useState(localStorage.getItem('appLang') || 'en');
-  const [notes, setNotes] = useState('');
-
-  const handleContinue = (e) => {
-    e.preventDefault();
-    if (name && age && preferredLanguage) {
-      localStorage.setItem('userName', name);
-      localStorage.setItem('userAge', age);
-      localStorage.setItem('userNotes', notes);
-      setLang(preferredLanguage);
-      localStorage.setItem('appLang', preferredLanguage);
-      navigate('/dashboard');
-    }
-  };
+  const { t } = useLanguage();
 
   const products = [
     { name: "Organic Sanitary Pads", price: "₹299", image: "https://images.pexels.com/photos/4239013/pexels-photo-4239013.jpeg?auto=compress&cs=tinysrgb&w=800", link: "https://www.amazon.in/s?k=organic+sanitary+pads" },
@@ -54,78 +39,21 @@ const LandingPage = () => {
             </div>
           </div>
 
-          <form onSubmit={handleContinue} style={styles.formCard} className="hover-card pop-in">
-            <h2 className="h2" style={{ marginBottom: '24px', fontSize: '1.5rem', color: 'var(--text-dark)' }}>{t('getStarted')}</h2>
-            
-            <div style={styles.inputGroup}>
-              <label style={styles.label}>{t('yourName')}</label>
-              <input 
-                type="text" 
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                style={styles.input} 
-                placeholder="Ex: Priya"
-                required
-              />
-            </div>
-
-            <div style={styles.inputGroup}>
-              <label style={styles.label}>{t('yourAge')}</label>
-              <select 
-                value={age} 
-                onChange={(e) => setAge(e.target.value)}
-                style={styles.input}
-                required
-              >
-                <option value="" disabled>Select Age</option>
-                <option value="10-14">10 - 14</option>
-                <option value="15-22">15 - 22</option>
-                <option value="23-35">23 - 35</option>
-                <option value="35+">35+</option>
-              </select>
-            </div>
-
-            <div style={styles.inputGroup}>
-              <label style={styles.label}>Preferred Language</label>
-              <select
-                value={preferredLanguage}
-                onChange={(e) => setPreferredLanguage(e.target.value)}
-                style={styles.input}
-                required
-              >
-                <option value="en">English</option>
-                <option value="hi">Hindi</option>
-              </select>
-            </div>
-
-            <div style={styles.inputGroup}>
-              <label style={styles.label}>Notes</label>
-              <textarea
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                style={styles.textarea}
-                placeholder="Any notes you'd like to save"
-                rows={3}
-              />
-            </div>
-
-            <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '16px', fontSize: '1.1rem', padding: '14px' }}>
-              {t('continueBtn')}
-            </button>
-            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginTop: '16px'}}>
-              <ShieldCheck size={16} color="var(--success)" />
-              <p style={styles.privacyText}>{t('privacyProtected')}</p>
-            </div>
-          </form>
+          <div style={styles.formColumn}>
+            <AuthCard />
+          </div>
         </div>
       </section>
+
+      {/* 1b. PHOTOS */}
+      <PhotoMosaic />
 
       {/* 2. ABOUT US SECTION */}
       <section id="about" style={styles.aboutSection}>
         <div style={{maxWidth: '1200px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', gap: '48px', alignItems: 'center'}}>
           <div style={styles.aboutImageContainer} className="fade-in">
             <img src="https://images.unsplash.com/photo-1623091410901-00e2d268901f?auto=format&fit=crop&q=80&w=400" alt="Smiling Indian Woman" style={styles.aboutImage1} />
-            <img src="https://images.unsplash.com/photo-1542848419-8665fc963095?auto=format&fit=crop&q=80&w=400" alt="Confident Women" style={styles.aboutImage2} />
+            <img src="/photos/women-14.png" alt="Smiling woman working at her laptop" style={styles.aboutImage2} />
             <div style={styles.floatingBadge}>
                <HeartPulse size={24} color="#e53e3e" /> 
                <span style={{fontWeight: 'bold', marginLeft: '8px'}}>Empowering 100k+ Women</span>
@@ -194,21 +122,9 @@ const LandingPage = () => {
 
       {/* 5. TESTIMONIALS SECTION */}
       <section id="stories" style={styles.testimonialsSection}>
-        <div style={{maxWidth: '1000px', margin: '0 auto', textAlign: 'center'}} className="fade-in">
+        <div style={{maxWidth: '1200px', margin: '0 auto', textAlign: 'center'}} className="fade-in">
           <h2 className="h2" style={{color: 'var(--primary-dark)', marginBottom: '48px'}}>{t('testimonialsTitle')}</h2>
-          
-          <div style={styles.testimonialGrid}>
-            <div style={styles.testimonialCard}>
-              <Quote size={40} color="var(--primary-light)" style={{marginBottom: '16px'}} />
-              <p style={{fontSize: '1.1rem', fontStyle: 'italic', marginBottom: '24px', lineHeight: 1.6}}>{t('test1')}</p>
-              <h4 style={{color: 'var(--primary-dark)'}}>{t('test1Author')}</h4>
-            </div>
-            <div style={styles.testimonialCard}>
-              <Quote size={40} color="var(--primary-light)" style={{marginBottom: '16px'}} />
-              <p style={{fontSize: '1.1rem', fontStyle: 'italic', marginBottom: '24px', lineHeight: 1.6}}>{t('test2')}</p>
-              <h4 style={{color: 'var(--primary)'}}>{t('test2Author')}</h4>
-            </div>
-          </div>
+          <TestimonialMarquee />
         </div>
       </section>
 
@@ -255,6 +171,9 @@ const styles = {
   heroTitle: { fontSize: 'clamp(2.6rem, 6vw, 4.4rem)', color: 'var(--primary-dark)', marginBottom: '12px', lineHeight: 1.05 },
   heroSubtitle: { fontFamily: 'var(--font-display)', fontSize: 'clamp(1.2rem, 2.4vw, 1.6rem)', color: 'var(--primary)', marginBottom: '16px', lineHeight: 1.35 },
   lotusStage: { width: '100%', maxWidth: '460px', height: 'clamp(240px, 36vh, 360px)', marginTop: '24px', marginLeft: '-12px' },
+  formColumn: { flex: '1 1 460px', maxWidth: '680px', display: 'flex', flexDirection: 'column', gap: '14px' },
+  restoreBox: { padding: '14px 18px', backgroundColor: 'rgba(255,255,255,0.75)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' },
+  restoreToggle: { display: 'inline-flex', alignItems: 'center', gap: '8px', fontWeight: '600', color: 'var(--primary-dark)', fontFamily: 'inherit', fontSize: '0.95rem' },
   formCard: { flex: '1 1 400px', backgroundColor: 'var(--surface)', padding: '40px', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-xl)', maxWidth: '500px', border: '1px solid rgba(255,143,171,0.3)' },
   
   aboutSection: { padding: '80px 24px', backgroundColor: 'var(--surface)' },

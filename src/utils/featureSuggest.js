@@ -22,19 +22,35 @@ const lesson = (courseId, id, keywords) => {
 };
 
 export const FEATURES = [
-  // ---- Learn: menstrual health ----
-  lesson('health', 2, ['period', 'menstruation', 'menstrual', 'mahwari', 'mahavari', 'maahvari', 'masik', 'mc ', 'mens', 'cycle', 'chakra', 'irregular', 'late period', 'periods late', 'पीरियड', 'माहवारी', 'मासिक', 'मासिक धर्म', 'चक्र']),
-  lesson('health', 3, ['pad', 'sanitary', 'napkin', 'hygiene', 'safai', 'saaf', 'cloth', 'kapda', 'kapde', 'menstrual cup', 'tampon', 'infection', 'itching', 'khujli', 'jalan', 'smell', 'badbu', 'discharge', 'पैड', 'सफ़ाई', 'सफाई', 'खुजली', 'बदबू', 'संक्रमण']),
-  lesson('health', 5, ['cramp', 'pain', 'dard', 'ainthan', 'pet dard', 'stomach ache', 'back pain', 'kamar dard', 'painkiller', 'दर्द', 'ऐंठन']),
-  lesson('health', 4, ['hormone', 'mood', 'pms', 'chidchida', 'gussa', 'udaas', 'sad', 'tired', 'thakan', 'हार्मोन', 'मूड', 'थकान', 'उदास']),
-  lesson('health', 1, ['uterus', 'ovary', 'ovaries', 'vagina', 'fallopian', 'reproductive', 'garbhashay', 'body parts', 'anatomy', 'गर्भाशय', 'अंडाशय', 'योनि']),
-  lesson('health', 6, ['myth', 'impure', 'ashuddh', 'kitchen', 'rasoi', 'achar', 'pickle', 'mandir', 'temple', 'sach hai', 'is it true', 'मिथक', 'अशुद्ध', 'रसोई']),
-  // ---- Learn: money ----
-  lesson('finance', 2, ['upi', 'gpay', 'google pay', 'phonepe', 'phone pe', 'paytm', 'bhim', 'qr', 'online payment', 'digital payment', 'payment', 'send money', 'paise bhej', 'transfer', 'यूपीआई', 'भुगतान']),
-  lesson('finance', 5, ['fraud', 'scam', 'otp', 'dhokha', 'thagi', 'cyber', 'hack', 'fake call', 'lottery', 'prize', 'inaam', 'kyc update', '1930', 'paise kat', 'money deducted', 'धोखा', 'ठगी', 'साइबर']),
-  lesson('finance', 1, ['bank', 'account', 'khata', 'khaata', 'passbook', 'atm', 'debit card', 'kyc', 'balance', 'jan dhan', 'zero balance', 'खाता', 'बैंक']),
-  lesson('finance', 3, ['save', 'saving', 'bachat', 'bachana', 'bachaye', 'emergency fund', 'gullak', 'piggy', 'budget', 'kharcha', 'kharch', 'expense', 'बचत', 'ख़र्च', 'खर्च']),
-  lesson('finance', 4, ['fd', 'fixed deposit', 'interest', 'byaj', 'byaaj', 'invest', 'rd', 'recurring deposit', 'deposit', 'ब्याज', 'निवेश']),
+  // ---- Learn: Health & Wellness ----
+  lesson('health', 3, ['period', 'menstruation', 'menstrual', 'mahwari', 'mahavari', 'maahvari', 'masik', 'mc ', 'mens', 'cycle', 'chakra', 'irregular', 'late period', 'periods late', 'पीरियड', 'माहवारी', 'मासिक', 'मासिक धर्म', 'चक्र', 'pad', 'sanitary', 'napkin', 'hygiene', 'safai', 'saaf', 'cloth', 'kapda', 'kapde', 'menstrual cup', 'tampon', 'पैड', 'सफ़ाई', 'सफाई', 'cramp', 'pain', 'dard', 'ainthan', 'pet dard', 'stomach ache', 'back pain', 'kamar dard', 'painkiller', 'दर्द', 'ऐंठन', 'myth', 'impure', 'ashuddh', 'kitchen', 'rasoi', 'achar', 'pickle', 'mandir', 'temple', 'sach hai', 'is it true', 'मिथक', 'अशुद्ध', 'रसोई']),
+  lesson('health', 5, ['infection', 'itching', 'khujli', 'jalan', 'smell', 'badbu', 'discharge', 'खुजली', 'बदबू', 'संक्रमण', 'hygiene', 'intimate', 'vaginal', 'white discharge', 'safai', 'योनि स्राव', 'स्वच्छता']),
+  lesson('health', 2, ['uterus', 'ovary', 'ovaries', 'vagina', 'fallopian', 'reproductive', 'garbhashay', 'body parts', 'anatomy', 'गर्भाशय', 'अंडाशय', 'योनि', 'hormone', 'puberty', 'hormones', 'हार्मोन']),
+  lesson('health', 8, ['mood', 'pms', 'chidchida', 'gussa', 'udaas', 'sad', 'tired', 'thakan', 'मूड', 'थकान', 'उदास', 'anxiety', 'stress', 'tension', 'depression', 'mental health', 'ghabrahat', 'चिंता', 'तनाव', 'अवसाद']),
+  lesson('health', 4, ['nutrition', 'diet', 'iron', 'calcium', 'vitamin', 'protein', 'khana', 'poshan', 'anemia', 'anaemia', 'khoon ki kami', 'पोषण', 'आहार', 'आयरन', 'ख़ून की कमी']),
+  lesson('health', 6, ['exercise', 'fitness', 'yoga', 'workout', 'walking', 'kasrat', 'वर्कआउट', 'कसरत', 'व्यायाम']),
+  lesson('health', 7, ['sleep', 'insomnia', 'neend', 'sleeping', 'नींद']),
+  lesson('health', 11, ['contraception', 'contraceptive', 'birth control', 'condom', 'copper t', 'iud', 'family planning', 'pregnancy rokna', 'गर्भनिरोधक', 'परिवार नियोजन']),
+  lesson('health', 12, ['pregnant', 'pregnancy', 'garbh', 'garbhavastha', 'prenatal', 'antenatal', 'delivery', 'baby', 'breastfeeding', 'गर्भावस्था', 'गर्भवती', 'प्रसव']),
+  lesson('health', 13, ['pcos', 'pcod', 'thyroid', 'endometriosis', 'fibroid', 'uti', 'urine infection', 'थायरॉइड']),
+  lesson('health', 14, ['screening', 'pap smear', 'cervical cancer', 'breast cancer', 'mammogram', 'hpv', 'checkup', 'सर्वाइकल', 'स्तन कैंसर']),
+  lesson('health', 19, ['abuse', 'violence', 'domestic violence', 'unsafe', 'harassment', 'marpit', 'हिंसा', 'मारपीट', 'उत्पीड़न']),
+  // ---- Learn: Financial Literacy ----
+  lesson('finance', 4, ['upi', 'gpay', 'google pay', 'phonepe', 'phone pe', 'paytm', 'bhim', 'qr', 'online payment', 'digital payment', 'payment', 'send money', 'paise bhej', 'transfer', 'यूपीआई', 'भुगतान', 'bank', 'account', 'khata', 'khaata', 'passbook', 'atm', 'debit card', 'kyc', 'balance', 'zero balance', 'खाता', 'बैंक', 'statement', 'neft', 'rtgs', 'imps']),
+  lesson('finance', 20, ['fraud', 'scam', 'otp', 'dhokha', 'thagi', 'cyber', 'hack', 'fake call', 'lottery', 'prize', 'inaam', 'kyc update', '1930', 'paise kat', 'money deducted', 'धोखा', 'ठगी', 'साइबर', 'phishing', 'upi fraud', 'password', 'pin', 'online safety']),
+  lesson('finance', 3, ['budget', 'kharcha', 'kharch', 'expense', 'ख़र्च', 'खर्च', 'monthly budget', '50/30/20', 'income expense']),
+  lesson('finance', 5, ['save', 'saving', 'bachat', 'bachana', 'bachaye', 'बचत', 'fd', 'fixed deposit', 'interest', 'byaj', 'byaaj', 'rd', 'recurring deposit', 'deposit', 'ब्याज']),
+  lesson('finance', 6, ['emergency fund', 'gullak', 'piggy', 'emergency', 'job loss', 'sudden expense', 'इमरजेंसी']),
+  lesson('finance', 7, ['loan', 'emi', 'udhaar', 'udhar', 'borrow', 'moneylender', 'loan app', 'gold loan', 'लोन', 'उधार', 'कर्ज़']),
+  lesson('finance', 8, ['credit score', 'cibil', 'credit card', 'credit report', 'क्रेडिट स्कोर', 'क्रेडिट कार्ड']),
+  lesson('finance', 9, ['financial goal', 'goal', 'plan my money', 'lakshya', 'लक्ष्य']),
+  lesson('finance', 10, ['insurance', 'bima', 'premium', 'health insurance', 'term insurance', 'claim', 'बीमा']),
+  lesson('finance', 12, ['jan dhan', 'sukanya', 'atal pension', 'ppf', 'nps', 'government scheme', 'sarkari yojana', 'सुकन्या', 'अटल पेंशन', 'योजना']),
+  lesson('finance', 13, ['invest', 'निवेश', 'investing', 'inflation', 'compounding', 'mahangai', 'महँगाई']),
+  lesson('finance', 15, ['mutual fund', 'sip', 'nav', 'म्यूचुअल फ़ंड', 'म्यूचुअल फंड']),
+  lesson('finance', 17, ['tax', 'income tax', 'itr', 'form 16', 'tds', 'कर', 'टैक्स', 'आयकर']),
+  lesson('finance', 18, ['retirement', 'pension', 'epf', 'budhapa', 'रिटायरमेंट', 'पेंशन']),
+  lesson('finance', 19, ['business', 'shop', 'dukaan', 'mudra', 'stand up india', 'self employed', 'व्यवसाय', 'दुकान', 'मुद्रा']),
 
   // ---- Features ----
   {

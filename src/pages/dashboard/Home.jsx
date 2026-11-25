@@ -4,10 +4,12 @@ import { useLanguage } from '../../context/languageContextValue';
 import { useUserPhoto } from '../../utils/userPhoto';
 import HomeExtras from './HomeExtras';
 import ProgressRing from '../../components/ProgressRing';
-import { Gamepad2, MessageCircle, BookOpen, Lightbulb, ChevronRight, ShieldCheck, Users, Landmark, FileText, Flame, TrendingUp, Activity, Stethoscope } from 'lucide-react';
+import { Lock, Gamepad2, MessageCircle, BookOpen, Lightbulb, ChevronRight, ShieldCheck, Users, Landmark, FileText, Flame, TrendingUp, Activity, Stethoscope } from 'lucide-react';
 import { getContinueLearningMeta, getStoredLearnProgress } from '../../utils/learningProgress';
 import { recordDailyActivity, getDayStreakCount } from '../../utils/userProgress';
 import { getLevelInfo } from '../../utils/levels';
+import { accountsEnabled, useAuth } from '../../lib/auth';
+import { lockedInfoFor } from '../../lib/guestAccess';
 
 // Soft circles and a faint lotus behind the greeting. Purely decorative.
 const BannerArt = () => (
@@ -28,7 +30,7 @@ const BannerArt = () => (
 );
 
 // A vivid gradient card with a big faint icon as a watermark.
-const Card = ({ title, icon, color, onClick, index }) => {
+const Card = ({ title, icon, color, onClick, index, locked = false }) => {
   const Icon = icon;
   return (
     <button
@@ -44,6 +46,7 @@ const Card = ({ title, icon, color, onClick, index }) => {
       <span className="bubble" style={styles.bubble}><Icon color="#fff" size={22} /></span>
       <h3 style={styles.cardTitle}>{title}</h3>
       <Icon className="watermark" size={96} color="#fff" style={styles.watermark} aria-hidden="true" />
+      {locked && <span style={styles.lockBadge} aria-label="Sign in needed"><Lock size={14} color="#fff" /></span>}
     </button>
   );
 };
@@ -52,6 +55,8 @@ const Home = () => {
   const navigate = useNavigate();
   const { t, lang } = useLanguage();
   const photo = useUserPhoto();
+  const auth = useAuth();
+  const isGuest = accountsEnabled && auth.status === 'signedOut';
   const [userName] = useState(() => localStorage.getItem('userName') || 'Didi');
   const [learnMeta, setLearnMeta] = useState(() => getContinueLearningMeta(getStoredLearnProgress()));
   const [dayStreak, setDayStreak] = useState(getDayStreakCount());
@@ -67,10 +72,12 @@ const Home = () => {
     refreshLearningMeta();
     window.addEventListener('storage', refreshLearningMeta);
     window.addEventListener('focus', refreshLearningMeta);
+    window.addEventListener('naari-progress-synced', refreshLearningMeta);
 
     return () => {
       window.removeEventListener('storage', refreshLearningMeta);
       window.removeEventListener('focus', refreshLearningMeta);
+      window.removeEventListener('naari-progress-synced', refreshLearningMeta);
     };
   }, []);
 
@@ -155,6 +162,7 @@ const Home = () => {
               title={feat.title}
               icon={feat.icon}
               color={feat.color}
+              locked={isGuest && Boolean(lockedInfoFor(feat.path))}
               onClick={() => navigate(feat.path)}
             />
           ))}
@@ -214,6 +222,7 @@ const styles = {
   card: { position: 'relative', overflow: 'hidden', minHeight: '130px', padding: '20px', borderRadius: 'var(--radius-lg)', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px', border: 'none', fontFamily: 'inherit', textAlign: 'left', color: '#fff', boxShadow: 'var(--shadow-md)' },
   bubble: { width: '44px', height: '44px', borderRadius: '12px', backgroundColor: 'rgba(255,255,255,0.22)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'transform 0.25s ease' },
   watermark: { position: 'absolute', right: '-14px', bottom: '-18px', opacity: 0.16, transform: 'rotate(-12deg)', pointerEvents: 'none', transition: 'transform 0.3s ease' },
+  lockBadge: { position: 'absolute', top: '12px', right: '12px', width: '28px', height: '28px', borderRadius: '50%', backgroundColor: 'rgba(0,0,0,0.28)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
   cardTitle: { position: 'relative', fontSize: '1.08rem', fontWeight: '600', color: '#fff', textShadow: '0 1px 3px rgba(0,0,0,0.25)' },
   continueCard: { backgroundColor: 'var(--surface)', padding: '24px', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', border: '1px solid var(--border-color)', borderLeft: '5px solid var(--primary)' }
 };

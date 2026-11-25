@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useLanguage } from '../context/languageContextValue';
-import { ChevronDown, PanelLeftClose, PanelLeftOpen, MessageCircle, X } from 'lucide-react';
+import { ChevronDown, PanelLeftClose, PanelLeftOpen, MessageCircle, X, Lock } from 'lucide-react';
 import Logo from './Logo';
 import { NAV } from './navConfig';
+import { accountsEnabled, useAuth } from '../lib/auth';
+import { lockedInfoFor } from '../lib/guestAccess';
 import SosButton from './sos/SosButton';
 
 const MIN_WIDTH = 76; // icon-only rail
@@ -19,6 +21,8 @@ const Sidebar = ({ isMobile = false, mobileOpen = false, onMobileClose = () => {
   const navigate = useNavigate();
   const { t, lang } = useLanguage();
   const { pathname } = useLocation();
+  const auth = useAuth();
+  const isGuest = accountsEnabled && auth.status === 'signedOut';
   const isHome = pathname.replace(/\/+$/, '') === '/dashboard';
 
   const [width, setWidth] = useState(isHome ? DEFAULT_OPEN : MIN_WIDTH);
@@ -132,6 +136,7 @@ const Sidebar = ({ isMobile = false, mobileOpen = false, onMobileClose = () => {
 
   const renderLink = (item, nested = false) => {
     const name = t(item.key);
+    const locked = isGuest && Boolean(lockedInfoFor(item.path));
     return (
       <NavLink
         key={item.path}
@@ -139,8 +144,8 @@ const Sidebar = ({ isMobile = false, mobileOpen = false, onMobileClose = () => {
         end={item.path === '/dashboard'} // Dashboard home only matches exact
         className="sidebar-link"
         onClick={isMobile ? onMobileClose : undefined}
-        title={collapsed ? name : undefined}
-        aria-label={name}
+        title={locked ? `${name} (${lang === 'hi' ? 'साइन इन चाहिए' : 'sign in needed'})` : (collapsed ? name : undefined)}
+        aria-label={locked ? `${name}, ${lang === 'hi' ? 'साइन इन चाहिए' : 'sign in needed'}` : name}
         style={({ isActive }) => ({
           ...styles.link,
           ...(nested ? styles.linkNested : {}),
@@ -149,7 +154,8 @@ const Sidebar = ({ isMobile = false, mobileOpen = false, onMobileClose = () => {
         })}
       >
         <item.icon size={nested ? 18 : 20} style={{ flexShrink: 0 }} />
-        {!collapsed && name}
+        {!collapsed && <span style={{ flex: 1 }}>{name}</span>}
+        {locked && !collapsed && <Lock size={14} color="var(--text-light)" aria-hidden="true" />}
       </NavLink>
     );
   };

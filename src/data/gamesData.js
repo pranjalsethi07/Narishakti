@@ -1,3 +1,5 @@
+import { notifyProgressChanged } from '../lib/sync';
+
 // Content, level rules and progress helpers for the Play Games section.
 // Every piece of text is { en, hi }.
 
@@ -401,6 +403,7 @@ export const saveLevel = (type, level, stars) => {
     if (!game[level] || stars > game[level]) game[level] = stars;
     all[type] = game;
     localStorage.setItem(PROGRESS_KEY, JSON.stringify(all));
+    notifyProgressChanged();
   } catch {
     // storage unavailable: progress just isn't remembered
   }

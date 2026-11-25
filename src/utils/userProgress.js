@@ -1,4 +1,5 @@
 import { getStoredLearnProgress } from './learningProgress';
+import { notifyProgressChanged } from '../lib/sync';
 
 const QUESTIONS_ASKED_KEY = 'questionsAskedCount';
 const STREAK_KEY = 'dailyStreakMeta';
@@ -24,6 +25,7 @@ export const incrementQuestionsAsked = () => {
   const prev = Number(localStorage.getItem(QUESTIONS_ASKED_KEY) || '0');
   const next = prev + 1;
   localStorage.setItem(QUESTIONS_ASKED_KEY, String(next));
+  notifyProgressChanged();
   return next;
 };
 
@@ -53,7 +55,12 @@ export const recordDailyActivity = () => {
   }
 
   const payload = { streak, lastActiveDate };
-  localStorage.setItem(STREAK_KEY, JSON.stringify(payload));
+  const serialized = JSON.stringify(payload);
+  // Only save (and back up) when something changed. This runs on many page loads.
+  if (raw !== serialized) {
+    localStorage.setItem(STREAK_KEY, serialized);
+    notifyProgressChanged();
+  }
   return streak;
 };
 

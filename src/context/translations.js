@@ -70,7 +70,9 @@ export const translations = {
     askQue: "Ask a Que 🎤",
     chatWa: "Chat on WhatsApp",
     callUs: "Call par baat kare",
-    buyProd: "Buy Products"
+    buyProd: "Buy Products",
+    photosTitle: "Made for women like you",
+    photosSub: "Farmers, students, homemakers and professionals. Every woman deserves clear, private answers about her health and her money."
   },
   hi: {
     dashboard: "डैशबोर्ड (Dashboard)",
@@ -143,6 +145,8 @@ export const translations = {
     askQue: "एक प्रश्न पूछें 🎤",
     chatWa: "WhatsApp पर चैट करें",
     callUs: "कॉल पर बात करें",
-    buyProd: "उत्पाद खरीदें"
+    buyProd: "उत्पाद खरीदें",
+    photosTitle: "आप जैसी महिलाओं के लिए बनाया गया",
+    photosSub: "किसान, छात्राएं, गृहिणियां और नौकरीपेशा महिलाएं। हर महिला को अपनी सेहत और पैसों के बारे में साफ़, निजी जवाब मिलने चाहिए।"
   }
 };

@@ -1,14 +1,19 @@
 import { useCallback, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Check, ChevronDown, Globe, LogOut, User } from 'lucide-react';
+import { Check, ChevronDown, Globe, LogIn, LogOut, User, UserPlus, Trash2 } from 'lucide-react';
 import { useDismiss } from './useDismiss';
 import { useUserPhoto } from '../../utils/userPhoto';
+import { accountsEnabled, useAuth, signOutDevice } from '../../lib/auth';
+import { confirmSignOut, confirmClearDevice } from '../../lib/signOutWarning';
 
-// Your photo (or initials) with a dropdown: profile, language and logout.
+// Your photo (or initials) with a dropdown. Signed in: profile, language, sign out.
+// Guest: sign in or create an account, language, and clearing this device.
 const AvatarMenu = ({ lang, setLang, t }) => {
   const navigate = useNavigate();
   const photo = useUserPhoto();
   const hi = lang === 'hi';
+  const auth = useAuth();
+  const isGuest = accountsEnabled && auth.status === 'signedOut';
   const [open, setOpen] = useState(false);
   const wrapRef = useRef(null);
   const close = useCallback(() => setOpen(false), []);
@@ -22,13 +27,22 @@ const AvatarMenu = ({ lang, setLang, t }) => {
     navigate('/dashboard/profile');
   };
 
-  const logout = () => {
-    const sure = window.confirm(
-      hi
-        ? 'लॉगआउट करने पर आपका सारा डेटा (प्रोफ़ाइल, प्रगति, फ़ोटो) मिट जाएगा। जारी रखें?'
-        : 'Logging out clears all your data on this device (profile, progress, photo). Continue?'
-    );
-    if (!sure) return;
+  const goAuth = (mode) => {
+    setOpen(false);
+    navigate(`/?mode=${mode}`);
+  };
+
+  // Signing out only leaves this device. Her account and progress stay safe on the server.
+  const logout = async () => {
+    if (!confirmSignOut(lang)) return;
+    await signOutDevice();
+    localStorage.clear();
+    window.location.href = '/';
+  };
+
+  // A guest has no account, so clearing the device is the only way to "leave".
+  const clearGuestData = () => {
+    if (!confirmClearDevice(lang)) return;
     localStorage.clear();
     window.location.href = '/';
   };
@@ -55,12 +69,25 @@ const AvatarMenu = ({ lang, setLang, t }) => {
         <div style={styles.panel} role="menu" className="pop-in">
           <div style={styles.who}>
             <strong style={{ fontSize: '1rem' }}>{name || (hi ? 'दीदी' : 'Didi')}</strong>
-            <span className="subtext" style={{ fontSize: '0.85rem' }}>{hi ? 'आपका अकाउंट' : 'Your account'}</span>
+            <span className="subtext" style={{ fontSize: '0.85rem' }}>
+              {isGuest ? (hi ? 'गेस्ट' : 'Guest') : (auth.username ? `@${auth.username}` : (hi ? 'आपका अकाउंट' : 'Your account'))}
+            </span>
           </div>
 
-          <button type="button" role="menuitem" style={styles.row} onClick={goProfile}>
-            <User size={18} color="var(--primary)" /> {t('profile')}
-          </button>
+          {isGuest ? (
+            <>
+              <button type="button" role="menuitem" style={styles.row} onClick={() => goAuth('signin')}>
+                <LogIn size={18} color="var(--primary)" /> {hi ? 'साइन इन करें' : 'Sign in'}
+              </button>
+              <button type="button" role="menuitem" style={styles.row} onClick={() => goAuth('signup')}>
+                <UserPlus size={18} color="var(--primary)" /> {hi ? 'अकाउंट बनाएं' : 'Create account'}
+              </button>
+            </>
+          ) : (
+            <button type="button" role="menuitem" style={styles.row} onClick={goProfile}>
+              <User size={18} color="var(--primary)" /> {t('profile')}
+            </button>
+          )}
 
           <div style={styles.langBlock}>
             <span style={styles.langLabel}><Globe size={16} /> {hi ? 'भाषा' : 'Language'}</span>
@@ -80,9 +107,15 @@ const AvatarMenu = ({ lang, setLang, t }) => {
             </div>
           </div>
 
-          <button type="button" role="menuitem" style={{ ...styles.row, color: 'var(--danger)', borderTop: '1px solid var(--border-color)' }} onClick={logout}>
-            <LogOut size={18} /> {t('logout')}
-          </button>
+          {isGuest ? (
+            <button type="button" role="menuitem" style={{ ...styles.row, color: 'var(--danger)' }} onClick={clearGuestData}>
+              <Trash2 size={18} /> {hi ? 'इस डिवाइस का डेटा साफ़ करें' : 'Clear data on this device'}
+            </button>
+          ) : (
+            <button type="button" role="menuitem" style={{ ...styles.row, color: 'var(--danger)' }} onClick={logout}>
+              <LogOut size={18} /> {hi ? 'साइन आउट' : 'Sign out'}
+            </button>
+          )}
         </div>
       )}
     </div>

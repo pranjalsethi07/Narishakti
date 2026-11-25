@@ -4,6 +4,7 @@ import { Menu, Mic, Search, Globe, Flame, TrendingUp, ChevronRight } from 'lucid
 import { useLanguage } from '../context/languageContextValue';
 import { useMediaQuery } from '../utils/useMediaQuery';
 import { recordDailyActivity } from '../utils/userProgress';
+import { accountsEnabled, useAuth } from '../lib/auth';
 import { getLevelInfo } from '../utils/levels';
 import { getCrumbs } from './navConfig';
 import NotificationBell from './header/NotificationBell';
@@ -16,6 +17,8 @@ const TopNav = ({ isMobile = false, onMenuClick = () => {} }) => {
   const { lang, setLang, t } = useLanguage();
   const hi = lang === 'hi';
   const wide = useMediaQuery('(min-width: 1100px)');
+  const auth = useAuth();
+  const isGuest = accountsEnabled && auth.status === 'signedOut';
   const [query, setQuery] = useState('');
   // Count today as an active day as soon as the dashboard opens (safe to repeat).
   const [streak] = useState(() => recordDailyActivity());
@@ -100,7 +103,7 @@ const TopNav = ({ isMobile = false, onMenuClick = () => {} }) => {
 
         {/* on phones the menu (with its SOS button) is a hidden drawer, so SOS sits in the header too */}
         {isMobile && <SosButton variant="header" />}
-        <NotificationBell lang={lang} streak={streak} />
+        <NotificationBell lang={lang} streak={streak} canUseProfile={!isGuest} />
         <AvatarMenu lang={lang} setLang={setLang} t={t} />
       </div>
     </header>

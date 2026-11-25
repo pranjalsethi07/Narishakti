@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { saveTestResult } from '../../utils/testResults';
 import { ShieldCheck, Target, Award, ArrowRight, RefreshCcw, CheckCircle2 } from 'lucide-react';
 
 const TestKnowledge = () => {
@@ -136,6 +137,7 @@ const TestKnowledge = () => {
         setCurrentQuestion(prev => prev + 1);
         setSelectedOption(null);
       } else {
+        saveTestResult(activeTest, score + (correct ? 1 : 0), testBanks[activeTest].length);
         setTestFinished(true);
       }
     }, 2000);

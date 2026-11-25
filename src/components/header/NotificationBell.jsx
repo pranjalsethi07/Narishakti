@@ -21,7 +21,7 @@ const dayKey = () => {
 };
 
 // Reminders built from what you have actually done. Nothing is sent from a server.
-const NotificationBell = ({ lang, streak }) => {
+const NotificationBell = ({ lang, streak, canUseProfile = true }) => {
   const navigate = useNavigate();
   const hi = lang === 'hi';
   const [open, setOpen] = useState(false);
@@ -50,7 +50,7 @@ const NotificationBell = ({ lang, streak }) => {
       title: hi ? 'सीखना जारी रखें' : 'Continue learning',
       text: learn.module?.title || '',
     }] : []),
-    ...(!profileDone ? [{
+    ...(!profileDone && canUseProfile ? [{
       id: 'profile', icon: UserCog, color: '#805ad5', bg: '#faf5ff', path: '/dashboard/profile',
       title: hi ? 'अपनी प्रोफ़ाइल पूरी करें' : 'Complete your profile',
       text: hi ? 'योजनाओं की पात्रता जांचने के लिए' : 'Needed to check scheme eligibility',

@@ -1,8 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, Navigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, BookOpen, Check, Clapperboard, Clock, ListChecks, Lock, Repeat } from 'lucide-react';
 import { useLanguage } from '../../../context/languageContextValue';
-import { COURSES } from '../../../data/courses';
+import { COURSES, levelOf } from '../../../data/courses';
 import {
   coursePercent, getLessonSteps, getOpenAll, getStoredLearnProgress, lessonFraction,
   markLessonDone, markStepDone, setOpenAll,
@@ -50,6 +50,7 @@ const CoursePage = ({ courseId }) => {
   const videos = course.lessons.filter((l) => l.video).length;
   const minutes = course.lessons.reduce((m, l) => m + l.minutes, 0);
   const allDone = doneN === course.lessons.length;
+  const currentLevel = levelOf(course, course.lessons[currentIdx]);
 
   const open = (i) => {
     setJustDone(null);
@@ -111,6 +112,9 @@ const CoursePage = ({ courseId }) => {
             <>
               <b>{allDone ? tr(`All ${course.lessons.length} lessons done`, `सभी ${course.lessons.length} पाठ पूरे`) : tr(`You are on Lesson ${currentIdx + 1} of ${course.lessons.length}`, `आप ${course.lessons.length} में से पाठ ${currentIdx + 1} पर हैं`)}</b>
               <span style={{ color: 'var(--text-muted)' }}> · <span className="lx-done-n">{tr(`${doneN} done`, `${doneN} पूरे`)}</span>{lockedN > 0 && ` · ${tr(`${lockedN} locked`, `${lockedN} बंद`)}`}</span>
+              {!allDone && currentLevel && (
+                <span style={{ color: 'var(--text-muted)' }}> · {tr('Level', 'स्तर')} {currentLevel.id}: {L(currentLevel.title)}</span>
+              )}
             </>
           }
         />
@@ -149,7 +153,11 @@ const CoursePage = ({ courseId }) => {
           <h4>{tr('In this course', 'इस कोर्स में')}</h4>
           <ol>
             {course.lessons.map((l, i) => (
-              <li key={l.id}>
+              <React.Fragment key={l.id}>
+              {(i === 0 || l.level !== course.lessons[i - 1].level) && (
+                <li className="lx-level">{tr(`Level ${l.level}`, `स्तर ${l.level}`)} · {L(levelOf(course, l)?.title)}</li>
+              )}
+              <li>
                 <button type="button" className={i === idx ? 'sel' : ''} onClick={() => open(i)}>
                   <Node state={states[i]} no={i + 1} />
                   <span className="lx-side-t">
@@ -161,6 +169,7 @@ const CoursePage = ({ courseId }) => {
                   </span>
                 </button>
               </li>
+              </React.Fragment>
             ))}
           </ol>
         </aside>
@@ -176,6 +185,17 @@ const Node = ({ state, no }) => (
 );
 
 const LessonTrack = ({ course, states, steps, progress, selIdx, onOpen, tr, L, summary }) => {
+  const listRef = useRef(null);
+  // With 20 lessons the track scrolls sideways: keep the selected lesson in view.
+  useEffect(() => {
+    const list = listRef.current;
+    const item = list?.querySelector('li[data-selected="true"]');
+    if (!list || !item) return;
+    const offset = item.getBoundingClientRect().left - list.getBoundingClientRect().left;
+    const left = list.scrollLeft + offset - (list.clientWidth - item.offsetWidth) / 2;
+    const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    list.scrollTo({ left: Math.max(0, left), behavior: calm ? 'auto' : 'smooth' });
+  }, [selIdx]);
   const legend = [
     { color: '#38a169', label: tr('Done', 'पूरा') },
     { color: course.accent, label: tr('You are here', 'आप यहाँ हैं') },
@@ -189,12 +209,17 @@ const LessonTrack = ({ course, states, steps, progress, selIdx, onOpen, tr, L, s
           {legend.map((l) => <li key={l.label}><i style={{ background: l.color }} />{l.label}</li>)}
         </ul>
       </div>
-      <ol className="lx-steps">
+      <ol className="lx-steps" ref={listRef}>
         {course.lessons.map((l, i) => {
           const s = states[i];
           const pct = Math.round(lessonFraction(course, l, progress, steps) * 100);
           return (
-            <li key={l.id} aria-current={s === 'here' ? 'step' : undefined}>
+            <li
+              key={l.id}
+              className={i > 0 && l.level !== course.lessons[i - 1].level ? 'lvl-start' : undefined}
+              data-selected={i === selIdx}
+              aria-current={s === 'here' ? 'step' : undefined}
+            >
               {i < course.lessons.length - 1 && <span className={`lx-line${s === 'done' ? ' done' : ''}`} aria-hidden="true" />}
               <button
                 type="button"

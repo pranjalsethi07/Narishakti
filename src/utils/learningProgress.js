@@ -1,4 +1,5 @@
 import { COURSES, stepsOf } from '../data/courses';
+import { notifyProgressChanged } from '../lib/sync';
 
 // learnProgress: { health: [lessonId…], finance: [lessonId…] } — the lessons finished (their quiz passed).
 // learnSteps:    { 'health-2': ['watch', 'read'] } — the steps done inside lessons not yet finished.
@@ -22,6 +23,7 @@ const readJson = (key, fallback) => {
 const writeJson = (key, value) => {
   try {
     localStorage.setItem(key, JSON.stringify(value));
+    notifyProgressChanged();
   } catch {
     // storage unavailable (private mode); progress lasts for this visit only
   }

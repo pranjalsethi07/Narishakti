@@ -22,6 +22,9 @@ import {
 } from '../../utils/userProgress';
 import { useUserPhoto, setUserPhoto, clearUserPhoto } from '../../utils/userPhoto';
 import { getLevelInfo } from '../../utils/levels';
+import AccountBackup from '../../components/AccountBackup';
+import { signOutDevice } from '../../lib/auth';
+import { confirmSignOut } from '../../lib/signOutWarning';
 
 const PROFILE_STORAGE_KEY = 'userProfile';
 const PROFILE_DRAFT_STORAGE_KEY = 'userProfileDraft';
@@ -319,7 +322,9 @@ const Profile = () => {
     setPhotoError('');
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    if (!confirmSignOut(lang)) return;
+    await signOutDevice();
     localStorage.clear();
     window.location.href = '/';
   };
@@ -447,6 +452,8 @@ const Profile = () => {
               </div>
             </div>
           </div>
+
+          <AccountBackup />
 
           <button className="btn btn-outline" style={{ color: 'var(--danger)', borderColor: 'var(--danger)' }} onClick={handleLogout}>
             <LogOut size={18} /> {t('logout')}
